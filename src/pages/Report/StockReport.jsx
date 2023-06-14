@@ -6,6 +6,7 @@ import { getAllProducts } from '../../api/product';
 import { getAllTypes } from '../../api/producttype';
 import { getAllBuyForms } from '../../api/buy';
 import { getAllSellForms } from '../../api/sell';
+import { countQuantity } from '../../utils/countQuantity';
 
 const StockReport = ({ show }) => {
   const token = useUserStore((state) => state.token);
@@ -43,28 +44,7 @@ const StockReport = ({ show }) => {
     };
     fetchData();
   }, []);
-  // Find quantity
-  const findQuantity = (forms, id) => {
-    let totalQuantity = 0;
-    if (forms[0].SellFormDetails !== undefined)
-      for (const form of forms) {
-        for (const product of form.SellFormDetails) {
-          if (product.ProductId === id) {
-            totalQuantity += product.quantity;
-          }
-        }
-      }
-    else if (forms[0].BuyFormDetails !== undefined)
-      for (const form of forms) {
-        for (const product of form.BuyFormDetails) {
-          if (product.ProductId === id) {
-            totalQuantity += product.quantity;
-          }
-        }
-      }
-    else totalQuantity = 'Empty';
-    return totalQuantity;
-  };
+
   // Data
   const columns = useMemo(
     () => [
@@ -134,8 +114,8 @@ const StockReport = ({ show }) => {
         id: product.id,
         name: product.name,
         firstStock: 'In process',
-        buy: findQuantity(buyFormData, product.id),
-        sell: findQuantity(sellFormData, product.id),
+        buy: countQuantity(buyFormData, product.id, '06', '2023'),
+        sell: countQuantity(sellFormData, product.id, '06', '2023'),
         stock: product.stock,
         unit: types.find((type) => type.id === product.ProductTypeId).unit,
       };
