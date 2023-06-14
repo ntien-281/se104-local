@@ -24,7 +24,6 @@ const BuySearch = ({ show }) => {
       setIsLoading(true);
       try {
         await getAllBuyForms(token).then((res) => {
-          console.log(res.data);
           setFormData(res.data);
         });
         setError(false);
@@ -134,7 +133,6 @@ const BuySearch = ({ show }) => {
       };
     });
   }, [formData]);
-  console.log(formData);
   return (
     <SearchContainer
       show={show}
