@@ -7,7 +7,7 @@ import { getAllBuyForms } from '../../api/buy';
 import { getAllSellForms } from '../../api/sell';
 import { countQuantity } from '../../utils/countQuantity';
 
-const StockReport = ({ show }) => {
+const StockReport = () => {
   const token = useUserStore((state) => state.token);
 
   // TODO: call api
@@ -118,7 +118,7 @@ const StockReport = ({ show }) => {
   }, [sellFormData, buyFormData]);
 
   return (
-    <Stack spacing={2} sx={{ p: '20px', display: `${show ? 'block' : 'none'}` }}>
+    <Stack spacing={2} sx={{ p: '20px' }}>
       <Container>
         <Stack width="100%" mt="20px" mb="12px">
           <Typography variant="h4" textAlign="center">

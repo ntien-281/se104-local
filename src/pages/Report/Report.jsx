@@ -40,10 +40,7 @@ const Report = () => {
           <Tab label="Báo cáo tồn kho" value={'stock'}></Tab>
         </Tabs>
       </Box>
-      <main>
-        <SaleReport show={value === 'sale'} />
-        <StockReport show={value === 'stock'} />
-      </main>
+      <main>{value === 'form' ? <SaleReport show={true} /> : <StockReport />}</main>
     </>
   );
 };

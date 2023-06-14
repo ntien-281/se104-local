@@ -1,10 +1,20 @@
-import api from "./axios.config";
+import api from './axios.config';
 
+export const signUp = async (user, password) => {
+  let res;
+  try {
+    res = await api.post('/user/signup', { username, password });
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
 
 export const loginUser = async (username, password) => {
   let res;
   try {
-    res = await api.post("/user/login", {
+    res = await api.post('/user/login', {
       username,
       password,
     });
@@ -19,18 +29,22 @@ export const loginUser = async (username, password) => {
 export const logout = async (username, token) => {
   let res;
   try {
-    res = await api.post("/user/logout", {
-      user: username
-    }, {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    });
-    localStorage.setItem("username", "");
-    localStorage.setItem("token", "");
+    res = await api.post(
+      '/user/logout',
+      {
+        user: username,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    localStorage.setItem('username', '');
+    localStorage.setItem('token', '');
     return res;
   } catch (error) {
     console.log(error);
     return error;
   }
-}
+};
