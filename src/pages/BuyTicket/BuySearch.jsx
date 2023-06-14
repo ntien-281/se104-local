@@ -137,7 +137,7 @@ const BuySearch = ({ show }) => {
   console.log(formData);
   return (
     <SearchContainer
-      show={true}
+      show={show}
       title="Tra cứu phiếu mua"
       value={SearchInput}
       onChange={handleSearchInput}

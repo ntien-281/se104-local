@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Route, Routes } from 'react-router-dom';
-import { AppBar, Typography, Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import BuyForm from './BuyForm';
 import BuySearch from './BuySearch';
 import AppHeader from '../../components/AppHeader';
@@ -42,8 +43,8 @@ const Buy = () => {
         </Tabs>
       </Box>
       <main>
-        <BuyForm show={value === "form"} />
-        <BuySearch show={value === "search"} />
+        <BuyForm show={value === 'form'} />
+        <BuySearch show={value === 'search'} />
       </main>
     </>
   );
