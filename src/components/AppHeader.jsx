@@ -44,7 +44,7 @@ const AppHeader = ({ children }) => {
           </Grid>
           <Grid item sm></Grid>
           <Grid item sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
-            <h2>Người dùng: {username}</h2>
+            <h1>{username}</h1>
             <IconButton onClick={handleLogout}>
               {error ? (
                 <Alert severity="error">
@@ -62,7 +62,7 @@ const AppHeader = ({ children }) => {
               )}
               <Badge>
                 <PowerSettingsNewIcon
-                  fontSize="medium"
+                  fontSize="large"
                   sx={{ color: "#fff" }}
                 />
               </Badge>

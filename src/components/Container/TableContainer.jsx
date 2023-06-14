@@ -8,7 +8,7 @@ const TableContainer = ({ columns, rows, SearchInput = '' }) => {
         height: '400px',
         width: '100%',
         '& *': {
-          fontSize: '1.2rem',
+          fontSize: '1.4rem',
         },
       }}
     >

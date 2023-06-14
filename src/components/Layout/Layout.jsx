@@ -16,7 +16,6 @@ const Layout = () => {
           <div className="content">
             <Router />
           </div>
-          <Footer />
         </div>
       </section>
     </>

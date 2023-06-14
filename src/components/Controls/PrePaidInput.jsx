@@ -14,22 +14,8 @@ const PrePaidInput = ({
   const [maxPrePaidError, setMaxPrePaidError] = useState(false);
   const [priceError, setPriceError] = useState(false);
 
-  const handleChangeError = () => {
-    if (isNumberOnly(prePaidValue)) {
-      setPriceError(true);
-      return;
-    }
-    setPrePaidValue(Number(e.target.value));
-    if (prePaidValue <= minumunPrePaid * subtotal) {
-      setLowPrePaidError(true);
-      return;
-    }
-    if (prePaidValue > subtotal) {
-      setMaxPrePaidError(true);
-      return;
-    }
-  };
   const handleChange = (e) => {
+    console.log(maximum);
     setPrePaidValue(Number(e.target.value));
   }
 
@@ -40,16 +26,6 @@ const PrePaidInput = ({
       value={prePaidValue}
       variant="standard"
       required
-      error={lowPrePaidError || maxPrePaidError || priceError}
-      helperText={
-        lowPrePaidError
-          ? `Trả trước nhiều hơn ${minumunPrePaid * 100}%`
-          : maxPrePaidError
-          ? `Trả trước quá nhiều`
-          : priceError
-          ? "Sai định dạng"
-          : ""
-      }
       onChange={handleChange}
       onBlur={(e) => {
         if (!lowPrePaidError && !maxPrePaidError && !priceError) {
@@ -64,7 +40,7 @@ const PrePaidInput = ({
         },
         type: 'number',
         step: 50000,
-        min: 0,
+        min: minumunPrePaid * subtotal,
         max: maximum,
         inputMode: 'numeric', 
         pattern: '[0-9]*'
