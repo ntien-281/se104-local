@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { AppBar, Toolbar, Grid, IconButton, Badge, Box, CircularProgress, Alert } from '@mui/material';
+import { useState } from 'react';
+import { AppBar, Toolbar, Grid, IconButton, Badge } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../../store';
-import { logout } from '../api/user';
+import UserModal from './Modal/userModal';
 
 const AppHeader = ({ children }) => {
   const navigate = useNavigate();
@@ -15,6 +15,14 @@ const AppHeader = ({ children }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  // User modal
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <AppBar position="sticky" sx={{ width: '100%' }}>
@@ -26,11 +34,12 @@ const AppHeader = ({ children }) => {
           <Grid item sm></Grid>
           <Grid item sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h2>{username}</h2>
-            <IconButton>
+            <IconButton onClick={handleOpen}>
               <Badge>
-                <AccountCircleIcon fontSize="medium" sx={{ color: '#fff' }} />
+                <AccountCircleIcon fontSize="large" sx={{ color: '#fff' }} />
               </Badge>
             </IconButton>
+            <UserModal open={open} onClose={handleClose} />
           </Grid>
         </Grid>
       </Toolbar>

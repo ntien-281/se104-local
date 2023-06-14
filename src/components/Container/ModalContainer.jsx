@@ -1,13 +1,19 @@
-import { Dialog, DialogTitle, DialogActions, DialogContent } from '@mui/material';
+import { Dialog, DialogTitle, DialogActions, DialogContent, Typography } from '@mui/material';
 import { ControlButton } from '../Controls';
 
 const ModalContainer = ({ title, open, onClose, children, mWidth = 'md' }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={mWidth}>
       <DialogTitle
-        sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '1.8rem',
+        }}
       >
-        {title}
+        <b>{title}</b>
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>

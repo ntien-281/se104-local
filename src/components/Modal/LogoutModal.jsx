@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogActions, DialogContent, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogActions, DialogContent } from '@mui/material';
 import { ControlButton } from '../Controls';
 import { logout } from '../../api/user';
 import { useUserStore } from '../../../store';
