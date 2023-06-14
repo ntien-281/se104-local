@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import { AppBar, Toolbar, Grid, IconButton, Badge, Box } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../api/user";
-import { useUserStore } from "../../store";
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Grid, IconButton, Badge, Box, CircularProgress, Alert } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../../store';
+import { logout } from '../api/user';
 
 const AppHeader = ({ children }) => {
   const navigate = useNavigate();
@@ -18,53 +16,19 @@ const AppHeader = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleLogout = async () => {
-    if (token) {
-      let res;
-      setIsLoading(true);
-      try {
-        res = await logout(username, token);
-        setUsername("");
-        setPassword("");
-        setToken("");
-        navigate("/login");
-      } catch (error) {
-        setError(true);
-      }
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <AppBar position="sticky" sx={{ width: "100%" }}>
+    <AppBar position="sticky" sx={{ width: '100%' }}>
       <Toolbar>
         <Grid container alignItems="center">
           <Grid item>
             <h1>{children}</h1>
           </Grid>
           <Grid item sm></Grid>
-          <Grid item sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
-            <h2>Người dùng: {username}</h2>
-            <IconButton onClick={handleLogout}>
-              {error ? (
-                <Alert severity="error">
-                  {errMsg ? errMsg : "Có lỗi xảy ra"}
-                </Alert>
-              ) : (
-                <></>
-              )}
-              {isLoading ? (
-                <Box sx={{ display: "flex" }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                <></>
-              )}
+          <Grid item sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>{username}</h2>
+            <IconButton>
               <Badge>
-                <PowerSettingsNewIcon
-                  fontSize="medium"
-                  sx={{ color: "#fff" }}
-                />
+                <AccountCircleIcon fontSize="medium" sx={{ color: '#fff' }} />
               </Badge>
             </IconButton>
           </Grid>

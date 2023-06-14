@@ -1,18 +1,26 @@
 import { NavLink } from 'react-router-dom';
 import { publicRoutes } from '../Router/routes';
 import { useState } from 'react';
-import { CssBaseline } from '@mui/material';
-import { Box, Drawer, Icon, ToggleButtonGroup, ToggleButton, Typography } from '@mui/material';
+import { CssBaseline, Box, Drawer, Icon, ToggleButtonGroup, ToggleButton, Typography } from '@mui/material';
+import { ControlButton } from '../Controls';
+import LogoutModal from '../Modal/LogoutModal';
 
 const Navigator = () => {
-  let drawerWidth = 250;
-  let buttonWidth = 200;
-  let iconSize = 24;
+  const drawerWidth = 250;
+  const buttonWidth = 200;
+  const buttonHeight = 36;
+  const iconSize = 24;
   const [view, setView] = useState(0);
+  const [open, setOpen] = useState(false);
   const handleChange = (event, nextView) => {
     if (nextView !== null) setView(nextView);
   };
-
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <>
       <Box>
@@ -50,6 +58,19 @@ const Navigator = () => {
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
+          <Box width={drawerWidth} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <ControlButton
+              variant="contained"
+              width={buttonWidth}
+              height={buttonHeight}
+              fontSize="1.2rem"
+              color="error"
+              onClick={handleOpen}
+            >
+              Đăng xuất
+            </ControlButton>
+            <LogoutModal open={open} onClose={handleClose} />
+          </Box>
         </Drawer>
       </Box>
     </>
