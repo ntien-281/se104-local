@@ -1,3 +1,4 @@
+import Footer from '../Footer/Footer';
 import Navigator from '../Navigator/Navigator';
 import Router from '../Router/Router';
 import './layout.css';

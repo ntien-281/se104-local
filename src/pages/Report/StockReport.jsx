@@ -6,9 +6,7 @@ import { getAllProducts } from '../../api/product';
 import { getAllBuyForms } from '../../api/buy';
 import { getAllSellForms } from '../../api/sell';
 import { countQuantity } from '../../utils/countQuantity';
-
 import { isNumberOnly } from '../../reducer/form';
-
 
 const StockReport = () => {
   const token = useUserStore((state) => state.token);
@@ -48,7 +46,6 @@ const StockReport = () => {
   }, []);
 
 
-
   const handleChangeMonth = (e) => {
     if (Number(e.target.value) <= 0 || Number(e.target.value) > 12) {
       setMonthError(true);
@@ -65,7 +62,6 @@ const StockReport = () => {
     }
     setYear(e.target.value);
   }
-
   // Data
   const columns = useMemo(
     () => [
@@ -138,7 +134,6 @@ const StockReport = () => {
         prevStock: prev_stock,
         in: countQuantity(buyFormData, product.id, Number(month), Number(year)),
         out: countQuantity(sellFormData, product.id, Number(month), Number(year)),
-
         stock: product.stock,
         unit: product.ProductType.unit,
       };
