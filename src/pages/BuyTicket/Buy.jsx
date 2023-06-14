@@ -42,8 +42,8 @@ const Buy = () => {
         </Tabs>
       </Box>
       <main>
-        <BuyForm show={value === "form"} />
-        <BuySearch show={value === "search"} />
+        <BuyForm show={value === 'form'} />
+        <BuySearch show={value === 'search'} />
       </main>
     </>
   );

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-const TableContainer = ({ columns, rows, SearchInput }) => {
+const TableContainer = ({ columns, rows, SearchInput = '' }) => {
   return (
     <Box
       sx={{
