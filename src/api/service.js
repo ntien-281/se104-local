@@ -94,3 +94,22 @@ export const updateServiceDetail = async (token, item, id) => {
   }
   return res;
 }
+
+export const createServiceForm = async (token, reqBody) => {
+  let res;
+  // const { customer, phone, total, paid, remain, cart } = reqBody;
+  try {
+    await api.post('./service-form', {
+      ...reqBody
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then(result => res = {...res, result});
+    return res;
+  } catch (error) {
+    console.log(error);
+    res = {...res, error}
+    return res;
+  }
+}

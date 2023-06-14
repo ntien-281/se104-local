@@ -11,7 +11,7 @@ import {
   handleRemoveService,
 } from '../../reducer/form_actions';
 import { useUserStore } from '../../../store';
-import { getAllServices } from '../../api/service';
+import { createServiceForm, getAllServices } from '../../api/service';
 
 const defaultFormFields = {
   serviceFormID: '',
@@ -46,9 +46,52 @@ const ServiceForm = ({ show }) => {
       setOpen(false);
     }
   };
-  // TODO: Submit Form
-  const handleSubmit = (event) => {
-    
+  const handleSubmit = async () => {
+    let reqBody;
+    let res;
+    if (state.customerName === "" || state.customerPhone === "") {
+      alert("Nhập thông tin khách hàng")
+      return;
+    }
+    else if (state.serviceCart.length === 0) {
+      alert("Chưa chọn dịch vụ nào");
+      return;
+    }
+    let modifiedCart = state.serviceCart.map(item => {
+      return {
+        ServiceTypeId: item.id,
+        incurred: item.incurred,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+        prePaid: item.prePaid,
+        remain: item.subtotal - item.prePaid,
+      }
+    });
+    reqBody = {
+      customer: state.customerName,
+      phone: state.customerPhone,
+      total: state.total,
+      paid: modifiedCart.reduce((totalPaid, item) => totalPaid + item.prePaid, 0),
+      remain: state.remain,
+      cart: modifiedCart
+    };
+    console.log(reqBody);
+
+    try {
+      res = await createServiceForm(token, reqBody).then(result => res = result);
+      console.log(res);
+      if (res.error) {
+        alert("Nhận phiếu không thành");
+      } else {
+        alert("Nhận phiếu thành công.");
+      }
+    } catch (error) {
+      alert("Có lỗi xảy ra.");
+      console.log(error);
+    }
+    console.log(res);
+    resetForm(dispatch, defaultFormFields);
+
   };
 
 
@@ -104,7 +147,7 @@ const ServiceForm = ({ show }) => {
       totalPrice={state.total}
       productAmount={productAmount}
       resetForm={() => resetForm(dispatch, defaultFormFields)}
-      // submitForm={handleSubmit}
+      submitForm={handleSubmit}
     >
       <Grid item xs={7.5} marginLeft="10px">
         <TextField

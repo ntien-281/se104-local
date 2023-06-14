@@ -7,6 +7,7 @@ const PrePaidInput = ({
   setPrePaidService,
   serviceId,
   subtotal,
+  maximum
 }) => {
   const [prePaidValue, setPrePaidValue] = useState(0);
   const [lowPrePaidError, setLowPrePaidError] = useState(false);
@@ -63,6 +64,8 @@ const PrePaidInput = ({
         },
         type: 'number',
         step: 50000,
+        min: 0,
+        max: maximum,
         inputMode: 'numeric', 
         pattern: '[0-9]*'
       }}

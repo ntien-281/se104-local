@@ -35,7 +35,7 @@ const ServiceSearch = ({ show }) => {
       setIsLoading(false);
     };
     fetchData();
-  }, []);
+  }, [open]);
 
   const handleDetailButton = (rowID) => {
     setRowID(rowID);

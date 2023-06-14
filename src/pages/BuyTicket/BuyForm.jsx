@@ -39,7 +39,7 @@ const BuyForm = ({ show }) => {
       alert("Chưa chọn nhà cung cấp");
       return;
     }
-    if (state.cart.length === 0) {
+    else if (state.cart.length === 0) {
       alert("Giỏ hàng trống");
       return;
     }

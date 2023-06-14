@@ -39,6 +39,7 @@ const IncurredValueInput = ({ serviceId , setIncurredService}) => {
         },
         type: 'number',
         step: 50000,
+        min: 0,
         inputMode: 'numeric', 
         pattern: '[0-9]*'
       }}

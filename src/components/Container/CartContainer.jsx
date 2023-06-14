@@ -187,6 +187,7 @@ const CartContainer = ({
                   setPrePaidService={setPrePaidService}  
                   serviceId={service.id}
                   subtotal={service.subtotal}
+                  maximum={((service.price + service.incurred) * service.quantity)}
                 />
               </Box>
               <Box width="10%" textAlign="center">
