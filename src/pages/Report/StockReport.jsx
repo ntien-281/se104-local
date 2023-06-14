@@ -3,7 +3,6 @@ import { Typography, Stack } from '@mui/material';
 import { Container, TableContainer } from '../../components/Container';
 import { useUserStore } from '../../../store';
 import { getAllProducts } from '../../api/product';
-import { getAllTypes } from '../../api/producttype';
 import { getAllBuyForms } from '../../api/buy';
 import { getAllSellForms } from '../../api/sell';
 import { countQuantity } from '../../utils/countQuantity';
@@ -15,7 +14,6 @@ const StockReport = ({ show }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [products, setProducts] = useState([]);
-  const [types, setTypes] = useState([]);
   const [sellFormData, setSellFormData] = useState([]);
   const [buyFormData, setBuyFormData] = useState([]);
 
@@ -25,9 +23,6 @@ const StockReport = ({ show }) => {
       try {
         await getAllProducts(token).then((res) => {
           setProducts(res.data);
-        });
-        await getAllTypes(token).then((res) => {
-          setTypes(res.result.data);
         });
         await getAllSellForms(token).then((res) => {
           setSellFormData(res.data);
@@ -63,7 +58,7 @@ const StockReport = ({ show }) => {
         disableColumnMenu: true,
       },
       {
-        field: 'firstStock',
+        field: 'producttypeid',
         headerName: 'Tồn đầu',
         headerAlign: 'center',
         align: 'center',
@@ -71,7 +66,7 @@ const StockReport = ({ show }) => {
         disableColumnMenu: true,
       },
       {
-        field: 'buy',
+        field: 'in',
         headerName: 'Mua vào',
         headerAlign: 'center',
         align: 'center',
@@ -79,7 +74,7 @@ const StockReport = ({ show }) => {
         disableColumnMenu: true,
       },
       {
-        field: 'sell',
+        field: 'out',
         headerName: 'Bán ra',
         headerAlign: 'center',
         align: 'center',
@@ -113,11 +108,11 @@ const StockReport = ({ show }) => {
         no: index + 1,
         id: product.id,
         name: product.name,
-        firstStock: 'In process',
-        buy: countQuantity(buyFormData, product.id, '06', '2023'),
-        sell: countQuantity(sellFormData, product.id, '06', '2023'),
+        producttypeid: 'In process',
+        in: countQuantity(buyFormData, product.id, '06', '2023'),
+        out: countQuantity(sellFormData, product.id, '06', '2023'),
         stock: product.stock,
-        unit: types.find((type) => type.id === product.ProductTypeId).unit,
+        unit: product.ProductType.unit,
       };
     });
   }, [sellFormData, buyFormData]);
