@@ -15,11 +15,11 @@ export const getAllServices = async (token) => {
   return res;
 }
 
-export const updateServiceType = async (token, body, id) => {
+export const updateServiceType = async (token, item, id) => {
   let res;
   try {
     await api.put(`./service/${id}`, {
-      ...body
+      ...item
     }, {
       headers: {
         Authorization: 'Bearer ' + token
@@ -44,6 +44,52 @@ export const createServiceType = async (token, type) => {
     }).then(result => res = {...res, result});
   } catch (error) {
     console.log(error);
+    res = {...res, error}
+  }
+  return res;
+}
+
+export const getAllServiceForms = async (token) => {
+  let res;
+  try {
+    await api.get('./service-form', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then(result => res = {...res, result});
+  } catch (error) {
+    console.log(error);
+    res = {...res, error}
+  }
+  return res;
+}
+
+export const getServiceDetails = async (token, id) => {
+  let res;
+  try {
+    await api.get(`./service-form/detail/${id}`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then(result => res ={...res, result});
+  } catch (error) {
+    console.log(error);
+    res = {...res, error}
+  }
+  return res;
+}
+
+export const updateServiceDetail = async (token, item, id) => {
+  let res;
+  try {
+    await api.put(`./service-form/detail/${id}`, {
+      ...item, // service form and type id included
+    }, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }).then(result => res = {...res, result});
+  } catch (error) {
     res = {...res, error}
   }
   return res;
