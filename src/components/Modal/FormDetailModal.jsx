@@ -71,8 +71,7 @@ const Table = ({ cart }) => {
   );
 };
 
-const FormDetailModal = ({ onButtonClose, open, title, formData }) => {
-
+const FormDetailModal = ({ onButtonClose, open, title, formData, type }) => {
   const modalTitle = (
     <div>
       <Typography variant="h4" component="h4" mt="12px">
@@ -87,13 +86,27 @@ const FormDetailModal = ({ onButtonClose, open, title, formData }) => {
       <Stack spacing={3}>
         <Stack direction="row" spacing={1}>
           <TextField disabled label="Mã hóa đơn" value={formData.id} sx={{ width: '250px' }} />
-          <TextField disabled label="Khách hàng" value={formData.customer} sx={{ width: '250px' }} />
+          {type === 'SellForm' && (
+            <TextField disabled label="Khách hàng" value={formData.customer} sx={{ width: '250px' }} />
+          )}
         </Stack>
+        {type === 'BuyForm' && (
+          <>
+            <Typography variant="h6">
+              <b>Thông tin nhà cung cấp</b>
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              <TextField disabled label="Nhà cung cấp" value={formData.Supplier.name} sx={{ width: '250px' }} />
+              <TextField disabled label="Địa chỉ" value={formData.Supplier.address} sx={{ width: '250px' }} />
+              <TextField disabled label="Số điện thoại" value={formData.Supplier.phone} sx={{ width: '250px' }} />
+            </Stack>
+          </>
+        )}
         <Paper variant="outlined" sx={{ padding: '16px' }}>
           <Typography sx={{ mb: '28px', fontSize: '1.8rem' }}>
             <b>Giỏ hàng</b>
           </Typography>
-          <Table cart={formData.SellFormDetails} />
+          <Table cart={type === 'SellForm' ? formData.SellFormDetails : formData.BuyFormDetails} />
         </Paper>
         <Paper
           variant="outlined"
@@ -105,7 +118,10 @@ const FormDetailModal = ({ onButtonClose, open, title, formData }) => {
             justifyContent: 'end',
           }}
         >
-          <Typography variant="h5">Tổng thanh toán ({formData.SellFormDetails.length} sản phẩm):</Typography>
+          <Typography variant="h5">
+            Tổng thanh toán ({type === 'SellForm' ? formData.SellFormDetails.length : formData.BuyFormDetails.length}{' '}
+            sản phẩm):
+          </Typography>
           <Typography variant="h5" color="red" ml="4px">
             <b>₫{formData.total.toLocaleString()}</b>
           </Typography>
