@@ -6,6 +6,7 @@ import { ControlButton } from '../../components/Controls';
 import { getAllSuppliers } from '../../api/supplier';
 import { useUserStore } from '../../../store';
 import CreateNewModal from '../../components/Modal/CreateNewModal';
+import { useNavigate } from 'react-router-dom';
 
 const Supplier = () => {
 
@@ -18,6 +19,23 @@ const Supplier = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const setUsername = useUserStore((state) => state.setUsername);
+  const setToken = useUserStore((state) => state.setToken);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usernameStorage = localStorage.getItem('username');
+    const tokenStorage = localStorage.getItem('token');
+    if (usernameStorage && tokenStorage) {
+      setUsername(usernameStorage);
+      setToken(tokenStorage);
+      navigate('/supplier');
+    } else {
+      navigate('/login');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {

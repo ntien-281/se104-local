@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Alert from "@mui/material/Alert";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ControlButton } from "../components/Controls";
 import DoneIcon from "@mui/icons-material/Done";
 import { useNavigate } from "react-router-dom";
@@ -24,12 +24,22 @@ const Login = () => {
   const password = useUserStore((state) => state.password);
   const errMsg = useUserStore((state) => state.errMsg);
 
-  const setUsername = useUserStore((state) => state.setUsername);
   const setPassword = useUserStore((state) => state.setPassword);
-  const setToken = useUserStore((state) => state.setToken);
   const setErrMsg = useUserStore((state) => state.setErrMsg);
+  const setUsername = useUserStore((state) => state.setUsername);
+  const setToken = useUserStore((state) => state.setToken);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const usernameStorage = localStorage.getItem('username');
+    const tokenStorage = localStorage.getItem('token');
+    if (usernameStorage && tokenStorage) {
+      setUsername(usernameStorage);
+      setToken(tokenStorage);
+      navigate('/sell');
+    }
+  }, []);
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -51,6 +61,8 @@ const Login = () => {
       res = await loginUser(username, password);
       setToken(res.data.token);
       setErrMsg("");
+      localStorage.setItem("username", username);
+      localStorage.setItem("token", res.data.token);
       navigate("/sell");
     } catch (error) {
       setError(true);

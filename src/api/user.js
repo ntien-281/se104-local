@@ -26,6 +26,8 @@ export const logout = async (username, token) => {
         'Authorization': 'Bearer ' + token
       }
     });
+    localStorage.setItem("username", "");
+    localStorage.setItem("token", "");
     return res;
   } catch (error) {
     console.log(error);

@@ -4,6 +4,9 @@ import Services from './Services';
 import ServiceForm from './ServiceForm';
 import ServiceSearch from './ServiceSearch';
 import AppHeader from '../../components/AppHeader';
+import { useUserStore } from '../../../store';
+import { useNavigate } from 'react-router-dom';
+
 
 const Service = () => {
   const [value, setValue] = useState('form');
@@ -12,6 +15,23 @@ const Service = () => {
       setValue(newValue);
     }
   };
+
+  const setUsername = useUserStore((state) => state.setUsername);
+  const setToken = useUserStore((state) => state.setToken);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usernameStorage = localStorage.getItem('username');
+    const tokenStorage = localStorage.getItem('token');
+    if (usernameStorage && tokenStorage) {
+      setUsername(usernameStorage);
+      setToken(tokenStorage);
+      navigate('/service');
+    } else {
+      navigate('/login');
+    }
+  }, []);
 
   return (
     <>
