@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { AppBar, Typography, Box, Tab, Tabs } from '@mui/material';
 import SellForm from './SellForm';
 import SellSearch from './SellSearch';
 import AppHeader from '../../components/AppHeader';
+import { useUserStore } from '../../../store';
 
 const Sell = () => {
   const [value, setValue] = useState('form');
@@ -13,6 +14,23 @@ const Sell = () => {
       setValue(newValue);
     }
   };
+
+  const setUsername = useUserStore((state) => state.setUsername);
+  const setToken = useUserStore((state) => state.setToken);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usernameStorage = localStorage.getItem('username');
+    const tokenStorage = localStorage.getItem('token');
+    if (usernameStorage && tokenStorage) {
+      setUsername(usernameStorage);
+      setToken(tokenStorage);
+      navigate('/sell');
+    } else {
+      navigate('/login');
+    }
+  }, []);
 
   return (
     <>

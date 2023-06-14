@@ -4,6 +4,7 @@ import { AppBar, Typography, Box, Tab, Tabs } from '@mui/material';
 import BuyForm from './BuyForm';
 import BuySearch from './BuySearch';
 import AppHeader from '../../components/AppHeader';
+import { useUserStore } from '../../../store';
 
 const Buy = () => {
   const [value, setValue] = useState('form');
@@ -13,6 +14,23 @@ const Buy = () => {
       setValue(newValue);
     }
   };
+
+  const setUsername = useUserStore((state) => state.setUsername);
+  const setToken = useUserStore((state) => state.setToken);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usernameStorage = localStorage.getItem('username');
+    const tokenStorage = localStorage.getItem('token');
+    if (usernameStorage && tokenStorage) {
+      setUsername(usernameStorage);
+      setToken(tokenStorage);
+      navigate('/buy');
+    } else {
+      navigate('/login');
+    }
+  }, []);
 
   return (
     <>
