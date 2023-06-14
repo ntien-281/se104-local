@@ -76,11 +76,15 @@ const SellForm = ({ show }) => {
       total: state.total,
     };
 
-    console.log(reqBody);
+    // console.log(reqBody);
 
     try {
       res = await createSellForm(token, reqBody).then(result => res = result);
-      alert("Nhận phiếu thành công.");
+      if (res.error) {
+        alert("Nhận phiếu không thành");
+      } else {
+        alert("Nhận phiếu thành công.");
+      }
     } catch (error) {
       alert("Có lỗi xảy ra.");
       console.log(error);

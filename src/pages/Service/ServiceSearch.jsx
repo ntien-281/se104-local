@@ -180,6 +180,8 @@ const ServiceSearch = ({ show }) => {
     });
   }, [formData]);
 
+  console.log("rendered");
+
   return (
     <SearchContainer
       show={true}
