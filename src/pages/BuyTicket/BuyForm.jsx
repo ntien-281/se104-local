@@ -39,7 +39,7 @@ const BuyForm = ({ show }) => {
       alert("Chưa chọn nhà cung cấp");
       return;
     }
-    if (state.cart.length === 0) {
+    else if (state.cart.length === 0) {
       alert("Giỏ hàng trống");
       return;
     }
@@ -58,11 +58,15 @@ const BuyForm = ({ show }) => {
       total: state.total,
     };
 
-    console.log(reqBody);
+    // console.log(reqBody);
 
     try {
       res = await createBuyForm(token, reqBody).then(result => res = result);
-      alert("Nhận phiếu thành công.");
+      if (res.error) {
+        alert("Nhận phiếu không thành");
+      } else {
+        alert("Nhận phiếu thành công.");
+      }
     } catch (error) {
       alert("Có lỗi xảy ra.");
       console.log(error);

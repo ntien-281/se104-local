@@ -53,6 +53,7 @@ const SellForm = ({ show }) => {
   const handleSellSubmit = async () => {
     let reqBody;
     let res;
+    let outStockFlag = false;
     if (state.customer === "") {
       alert("Chưa nhập tên khách hàng");
       return;
@@ -61,7 +62,11 @@ const SellForm = ({ show }) => {
       alert("Giỏ hàng trống");
       return;
     }
+    console.log(state.cart);
     let modifiedCart = state.cart.map((item) => {
+      if (item.stock < item.quantity) {
+        outStockFlag = true;
+      }
       return {
         ProductId: item.id,
         ProductTypeId: item.ProductTypeId,
@@ -70,17 +75,25 @@ const SellForm = ({ show }) => {
           item.quantity * item.price * (1 + item.ProductType.interest / 100),
       };
     });
+    if (outStockFlag) {
+      alert("Sản phẩm trong kho không đủ.");
+      return;
+    }
     reqBody = {
       customer: state.customer,
       cart: modifiedCart,
       total: state.total,
     };
 
-    console.log(reqBody);
+    // console.log(reqBody);
 
     try {
       res = await createSellForm(token, reqBody).then(result => res = result);
-      alert("Nhận phiếu thành công.");
+      if (res.error) {
+        alert("Nhận phiếu không thành");
+      } else {
+        alert("Nhận phiếu thành công.");
+      }
     } catch (error) {
       alert("Có lỗi xảy ra.");
       console.log(error);

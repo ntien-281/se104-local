@@ -22,10 +22,10 @@ const CartContainer = ({
   deleteSearchInput,
   buyForm,
   setPrePaidService,
-  setIncurredService
+  setIncurredService,
+  getPara
 }) => {
-  // TODO: fetch this constant from db
-  const minumunPrePaid = 0.5;
+  // const minumunPrePaid = 0.5;
 
   const varientChooser = [
     {
@@ -183,10 +183,11 @@ const CartContainer = ({
               </Box>
               <Box width="12%" textAlign="center">
                 <PrePaidInput 
-                  minumunPrePaid={minumunPrePaid} 
+                  minumunPrePaid={Number(getPara) / 100} 
                   setPrePaidService={setPrePaidService}  
                   serviceId={service.id}
                   subtotal={service.subtotal}
+                  maximum={((service.price + service.incurred) * service.quantity)}
                 />
               </Box>
               <Box width="10%" textAlign="center">

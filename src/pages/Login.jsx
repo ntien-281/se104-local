@@ -32,9 +32,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const usernameStorage = localStorage.getItem('username');
-    const tokenStorage = localStorage.getItem('token');
+    const usernameStorage = sessionStorage.getItem('username');
+    const tokenStorage = sessionStorage.getItem('token');
     if (usernameStorage && tokenStorage) {
+      console.log('logged in')
       setUsername(usernameStorage);
       setToken(tokenStorage);
       navigate('/sell');
@@ -61,8 +62,8 @@ const Login = () => {
       res = await loginUser(username, password);
       setToken(res.data.token);
       setErrMsg("");
-      localStorage.setItem("username", username);
-      localStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("username", username);
+      sessionStorage.setItem("token", res.data.token);
       navigate("/sell");
     } catch (error) {
       setError(true);

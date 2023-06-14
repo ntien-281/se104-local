@@ -35,7 +35,7 @@ const ServiceSearch = ({ show }) => {
       setIsLoading(false);
     };
     fetchData();
-  }, []);
+  }, [open]);
 
   const handleDetailButton = (rowID) => {
     setRowID(rowID);
@@ -179,6 +179,8 @@ const ServiceSearch = ({ show }) => {
       };
     });
   }, [formData]);
+
+  console.log("rendered");
 
   return (
     <SearchContainer

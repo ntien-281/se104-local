@@ -1,7 +1,7 @@
 import { useState, useReducer, useEffect } from 'react';
-import formReducer from '../../reducer/form';
+import formReducer, { isNumberOnly } from '../../reducer/form';
 import { FormContainer, CartContainer } from '../../components/Container';
-import { Grid, TextField, Typography } from '@mui/material';
+import { Box, Grid, TextField, Typography } from '@mui/material';
 import { ControlButton } from '../../components/Controls';
 import {
   resetForm,
@@ -11,7 +11,8 @@ import {
   handleRemoveService,
 } from '../../reducer/form_actions';
 import { useUserStore } from '../../../store';
-import { getAllServices } from '../../api/service';
+import { createServiceForm, getAllServices } from '../../api/service';
+import { getParameter, updateParameter } from '../../api/parameter';
 
 const defaultFormFields = {
   serviceFormID: '',
@@ -36,6 +37,36 @@ const ServiceForm = ({ show }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  const [getPara, setGetPara] = useState(50);
+  const [paraValue, setParaValue] = useState(50)
+  const [paraError, setParaError] = useState(false)
+
+  const handleParaChange = (e) => {
+    setParaValue(e.target.value);
+    if (Number(e.target.value) <= 0 || Number(e.target.value) >= 100) {
+      setParaError(true);
+    } else {
+      setParaError(false);
+    }
+  }
+  const fetchPara = async () => {
+    let res = await getParameter(token);
+    if (res) {
+      setGetPara(res.result.data.value);
+    }
+  }
+  
+  useEffect(() => {
+    fetchPara();
+  });
+  const handleUpdatePara = async () => {
+    let res = await updateParameter(token, Number(paraValue));
+    if (res) {
+      alert("Cập nhật thành công");
+    }
+    fetchPara();
+  }
+
   // Modal Button
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -46,9 +77,52 @@ const ServiceForm = ({ show }) => {
       setOpen(false);
     }
   };
-  // TODO: Submit Form
-  const handleSubmit = (event) => {
-    
+  const handleSubmit = async () => {
+    let reqBody;
+    let res;
+    if (state.customerName === "" || state.customerPhone === "") {
+      alert("Nhập thông tin khách hàng")
+      return;
+    }
+    else if (state.serviceCart.length === 0) {
+      alert("Chưa chọn dịch vụ nào");
+      return;
+    }
+    let modifiedCart = state.serviceCart.map(item => {
+      return {
+        ServiceTypeId: item.id,
+        incurred: item.incurred,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+        prePaid: item.prePaid,
+        remain: item.subtotal - item.prePaid,
+      }
+    });
+    reqBody = {
+      customer: state.customerName,
+      phone: state.customerPhone,
+      total: state.total,
+      paid: modifiedCart.reduce((totalPaid, item) => totalPaid + item.prePaid, 0),
+      remain: state.remain,
+      cart: modifiedCart
+    };
+    console.log(reqBody);
+
+    try {
+      res = await createServiceForm(token, reqBody).then(result => res = result);
+      console.log(res);
+      if (res.error) {
+        alert("Nhận phiếu không thành");
+      } else {
+        alert("Nhận phiếu thành công.");
+      }
+    } catch (error) {
+      alert("Có lỗi xảy ra.");
+      console.log(error);
+    }
+    console.log(res);
+    resetForm(dispatch, defaultFormFields);
+
   };
 
 
@@ -93,7 +167,7 @@ const ServiceForm = ({ show }) => {
   };
 
   // console.log(token);
-  console.log(state.serviceCart);
+  // console.log(state.serviceCart);
 
   return (
     <FormContainer
@@ -104,27 +178,74 @@ const ServiceForm = ({ show }) => {
       totalPrice={state.total}
       productAmount={productAmount}
       resetForm={() => resetForm(dispatch, defaultFormFields)}
-      // submitForm={handleSubmit}
+      submitForm={handleSubmit}
     >
-      <Grid item xs={7.5} marginLeft="10px">
-        <TextField
-          label="Tên khách hàng"
-          placeholder="Nhập tên"
-          name="customerName"
-          value={state.customerName}
-          onChange={(e) => handleChange(dispatch, e)}
-          sx={{ width: '250px' }}
-        />
+      <Grid item xs={12} marginLeft="10px" sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+      }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+          <TextField
+            label="Tên khách hàng"
+            placeholder="Nhập tên"
+            name="customerName"
+            value={state.customerName}
+            onChange={(e) => handleChange(dispatch, e)}
+            sx={{ width: '250px' }}
+          />
+          <TextField
+            label="Số điện thoại"
+            placeholder="Nhập số điện thoại"
+            name="customerPhone"
+            value={state.customerPhone}
+            onChange={(e) => handleChange(dispatch, e)}
+            sx={{ width: '250px', marginTop: '12px' }}
+          />
+        </Box>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+          <Typography
+          sx={{
+            fontSize: '1.6rem',
+          }}>Quy định trả trước lớn hơn: <span style={{color: 'red', fontSize: "1.8rem", fontWeight:600}}>{getPara}</span>%, thay đổi:</Typography>
+          <TextField
+            label=""
+            placeholder="Nhập giá trị mới"
+            name="paravalue"
+            value={paraValue}
+            error={paraError}
+            helperText={paraError ? "Không hợp lệ" : ""}
+            onChange={handleParaChange}
+            sx={{ width: '100px', marginTop: '12px', marginBottom: '12px' }}
+            inputProps={{
+              style: {
+                fontSize: "1.5rem",
+                height: 20,
+                textAlign: "center",
+              },
+              type: "number",
+              step: 1,
+              min: 0,
+              max: 100,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
+          />
+          <ControlButton
+            color="success"
+            onClick={handleUpdatePara}
+          >Cập nhật</ControlButton>
+        </Box>
       </Grid>
       <Grid item xs={5} marginLeft="10px">
-        <TextField
-          label="Số điện thoại"
-          placeholder="Nhập số điện thoại"
-          name="customerPhone"
-          value={state.customerPhone}
-          onChange={(e) => handleChange(dispatch, e)}
-          sx={{ width: '250px' }}
-        />
+        
       </Grid>
       <Grid item xs={12}>
         {/* Gio Hang */}
@@ -146,6 +267,7 @@ const ServiceForm = ({ show }) => {
           deleteSearchInput={deleteSearchInput}
           setPrePaidService={setPrePaidService}
           setIncurredService={setIncurredService}
+          getPara={getPara}
         ></CartContainer>
       </Grid>
     </FormContainer>

@@ -29,19 +29,15 @@ export const loginUser = async (username, password) => {
 export const logout = async (username, token) => {
   let res;
   try {
-    res = await api.post(
-      '/user/logout',
-      {
-        user: username,
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    );
-    localStorage.setItem('username', '');
-    localStorage.setItem('token', '');
+    res = await api.post("/user/logout", {
+      user: username
+    }, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    sessionStorage.setItem("username", "");
+    sessionStorage.setItem("token", "");
     return res;
   } catch (error) {
     console.log(error);

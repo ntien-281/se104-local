@@ -32,11 +32,30 @@ const AppHeader = ({ children }) => {
             <h1>{children}</h1>
           </Grid>
           <Grid item sm></Grid>
-          <Grid item sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>{username}</h2>
-            <IconButton onClick={handleOpen}>
+
+          <Grid item sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
+            <h1>{username}</h1>
+            <IconButton onClick={handleLogout}>
+              {error ? (
+                <Alert severity="error">
+                  {errMsg ? errMsg : "Có lỗi xảy ra"}
+                </Alert>
+              ) : (
+                <></>
+              )}
+              {isLoading ? (
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <></>
+              )}
               <Badge>
-                <AccountCircleIcon fontSize="large" sx={{ color: '#fff' }} />
+                <PowerSettingsNewIcon
+                  fontSize="large"
+                  sx={{ color: "#fff" }}
+                />
+
               </Badge>
             </IconButton>
             <UserModal open={open} onClose={handleClose} />

@@ -160,6 +160,7 @@ const SellSearch = () => {
             onButtonClose={handleClose}
             title="Phiếu bán hàng"
             formData={formData[rowID]}
+            type="SellForm"
           />
           <TableContainer
             columns={columns}

@@ -26,10 +26,11 @@ export const createBuyForm = async (token, reqBody) => {
       headers: {
         Authorization: 'Bearer ' + token
       }
-    }).then(result => res = result);
+    }).then(result => res = {...res, result});
     return res;
   } catch (error) {
     console.log(error);
-    return error;
+    res = {...res, error}
+    return res;
   }
 }

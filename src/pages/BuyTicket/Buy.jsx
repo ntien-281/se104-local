@@ -21,8 +21,8 @@ const Buy = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const usernameStorage = localStorage.getItem('username');
-    const tokenStorage = localStorage.getItem('token');
+    const usernameStorage = sessionStorage.getItem('username');
+    const tokenStorage = sessionStorage.getItem('token');
     if (usernameStorage && tokenStorage) {
       setUsername(usernameStorage);
       setToken(tokenStorage);
@@ -42,8 +42,7 @@ const Buy = () => {
         </Tabs>
       </Box>
       <main>
-        <BuyForm show={value === 'form'} />
-        <BuySearch show={value === 'search'} />
+        {value === 'form' ? <BuyForm show={true} /> : <BuySearch show={true} />}
       </main>
     </>
   );

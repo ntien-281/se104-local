@@ -2,9 +2,12 @@ export const countQuantity = (forms, id, month, year) => {
   if (forms === 'No buyform found' || forms === 'No sales found') return 'Empty';
 
   let totalQuantity = 0;
+
+  const date = new Date(year, month - 1);
   // Filter form by month, year
   const filteredForms = forms.filter((form) => {
-    return form.createdAt.substring(0, 4) === year && form.createdAt.substring(5, 7) === month;
+    const formDate = new Date(form.date);
+    return ((formDate.getMonth() + 1) === month && formDate.getFullYear() === year);
   });
 
   // FilteredForm is empty
@@ -26,5 +29,8 @@ export const countQuantity = (forms, id, month, year) => {
           }
         }
       }
+  if (totalQuantity < 0) {
+    return 0;
+  }
   return totalQuantity;
 };

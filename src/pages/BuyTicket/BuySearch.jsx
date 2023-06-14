@@ -62,6 +62,8 @@ const BuySearch = ({ show }) => {
     setSearchInput(initialSearchInput);
   };
 
+  console.log(formData)
+
   // Data
   const columns = useMemo(
     () => [
@@ -76,7 +78,7 @@ const BuySearch = ({ show }) => {
       {
         field: 'id',
         headerName: 'Mã phiếu',
-        width: 100,
+        width: 200,
         disableColumnMenu: true,
       },
       {
@@ -90,7 +92,7 @@ const BuySearch = ({ show }) => {
         headerName: 'Tổng thanh toán',
         headerAlign: 'center',
         align: 'center',
-        width: 170,
+        width: 200,
         sortComparator: (v1, v2) => {
           const num1 = Number(v1.replace(/\D/g, ''));
           const num2 = Number(v2.replace(/\D/g, ''));
@@ -103,7 +105,7 @@ const BuySearch = ({ show }) => {
         headerName: 'Ngày thanh toán',
         headerAlign: 'center',
         align: 'center',
-        width: 170,
+        width: 200,
         disableColumnMenu: true,
       },
       {
@@ -127,7 +129,7 @@ const BuySearch = ({ show }) => {
         key: index,
         no: index + 1,
         id: form.id,
-        supplierName: form.Supplier.name,
+        supplierName: form?.Supplier?.name,
         totalPaid: `₫${form.total.toLocaleString()}`,
         date: getFormatDateString(form.date),
       };
