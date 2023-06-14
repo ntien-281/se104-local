@@ -1,23 +1,19 @@
-import { Dialog, DialogTitle, DialogActions, DialogContent, IconButton, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogActions, DialogContent, Typography } from '@mui/material';
 import { ControlButton } from '../Controls';
-import CloseIcon from '@mui/icons-material/Close';
-const ModalContainer = ({ title, open, onClose, children }) => {
+
+const ModalContainer = ({ title, open, onClose, children, mWidth = 'md' }) => {
   return (
-    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth="md">
+    <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth={mWidth}>
       <DialogTitle
-        sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '1.8rem',
+        }}
       >
-        {title}
-        {/* <Box width="90%">{title}</Box> */}
-        {/* <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            color: 'grey',
-          }}
-        >
-          <CloseIcon sx={{ fontSize: '3rem' }} />
-        </IconButton> */}
+        <b>{title}</b>
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions>

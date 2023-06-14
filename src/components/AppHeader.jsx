@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import { AppBar, Toolbar, Grid, IconButton, Badge, Box } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../api/user";
-import { useUserStore } from "../../store";
+import { useState } from 'react';
+import { AppBar, Toolbar, Grid, IconButton, Badge } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../../store';
+import UserModal from './Modal/userModal';
 
 const AppHeader = ({ children }) => {
   const navigate = useNavigate();
@@ -17,32 +15,24 @@ const AppHeader = ({ children }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
-  const handleLogout = async () => {
-    if (token) {
-      let res;
-      setIsLoading(true);
-      try {
-        res = await logout(username, token);
-        setUsername("");
-        setPassword("");
-        setToken("");
-        navigate("/login");
-      } catch (error) {
-        setError(true);
-      }
-      setIsLoading(false);
-    }
+  // User modal
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
-    <AppBar position="sticky" sx={{ width: "100%" }}>
+    <AppBar position="sticky" sx={{ width: '100%' }}>
       <Toolbar>
         <Grid container alignItems="center">
           <Grid item>
             <h1>{children}</h1>
           </Grid>
           <Grid item sm></Grid>
+
           <Grid item sx={{ display: 'flex', justifyContent: "space-between", alignItems: "center" }}>
             <h1>{username}</h1>
             <IconButton onClick={handleLogout}>
@@ -65,8 +55,10 @@ const AppHeader = ({ children }) => {
                   fontSize="large"
                   sx={{ color: "#fff" }}
                 />
+
               </Badge>
             </IconButton>
+            <UserModal open={open} onClose={handleClose} />
           </Grid>
         </Grid>
       </Toolbar>
