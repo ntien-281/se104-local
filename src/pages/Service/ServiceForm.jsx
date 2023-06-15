@@ -58,13 +58,17 @@ const ServiceForm = ({ show }) => {
   }
   
   useEffect(() => {
+    console.log("use effect fetch sent");
     fetchPara();
   }, []);
   const handleUpdatePara = async () => {
     let res = await updateParameter(token, Number(paraValue));
-    if (res) {
+    if (!res.error) {
       alert("Cập nhật thành công");
+    }else {
+      alert("Cập nhật thất bại");
     }
+    console.log(res);
     fetchPara();
   }
 

@@ -1,5 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
-import { Typography, Stack, TextField, Box, InputLabel, MenuItem, FormControl, Select } from "@mui/material";
+import {
+  Typography,
+  Stack,
+  TextField,
+  Box,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+} from "@mui/material";
 import { Container, TableContainer } from "../../components/Container";
 import { useUserStore } from "../../../store";
 import { getAllProducts } from "../../api/product";
@@ -9,6 +18,9 @@ import { countQuantity } from "../../utils/countQuantity";
 import { isNumberOnly } from "../../reducer/form";
 import { ControlButton } from "../../components/Controls";
 import { createReport } from "../../api/report";
+import { download } from "../../api/download";
+import axios from "axios";
+import api from "../../api/axios.config";
 
 const StockReport = () => {
   const token = useUserStore((state) => state.token);
@@ -58,13 +70,18 @@ const StockReport = () => {
         countQuantity(sellFormData, product.id, Number(month), Number(year)) -
         countQuantity(buyFormData, product.id, Number(month), Number(year));
       return {
-        totalImport: countQuantity(buyFormData, product.id, Number(month), Number(year)),
+        totalImport: countQuantity(
+          buyFormData,
+          product.id,
+          Number(month),
+          Number(year)
+        ),
         totalExport: countQuantity(
           sellFormData,
           product.id,
           Number(month),
           Number(year)
-          ),
+        ),
         beginStock: prev_stock,
         endStock: product.stock,
         ProductId: product.id,
@@ -79,7 +96,7 @@ const StockReport = () => {
         console.log(res.error);
         alert("Lưu báo cáo thành công.");
       } else {
-        alert("Lưu không thành công")
+        alert("Lưu không thành công");
       }
     } catch (error) {
       alert("Có lỗi xảy ra");
@@ -93,7 +110,7 @@ const StockReport = () => {
     } else {
       setMonthError(false);
     }
-    setMonth((e.target.value));
+    setMonth(e.target.value);
   };
   const handleChangeYear = (e) => {
     if (Number(e.target.value) <= 2000 || Number(e.target.value) > 2400) {
@@ -101,8 +118,36 @@ const StockReport = () => {
     } else {
       setYearError(false);
     }
-    setYear((e.target.value));
+    setYear(e.target.value);
   };
+
+  const downloadFile = async () => {
+    const reqBody = products.map((product, index) => {
+      const prev_stock =
+        product.stock +
+        countQuantity(sellFormData, product.id, Number(month), Number(year)) -
+        countQuantity(buyFormData, product.id, Number(month), Number(year));
+      return { no: index + 1, id: product.id, name: product.name, prevStock: prev_stock, in: countQuantity(buyFormData, product.id, Number(month), Number(year)), out: countQuantity(sellFormData, product.id, Number(month), Number(year)), stock: product.stock, unit: product.ProductType.unit };
+    });
+    const newBody = (JSON.stringify(reqBody));
+    await api.post(`/download`, {
+        newBody
+      } ,{
+        responseType: "arraybuffer",
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      })
+      .then((response) => {
+        const blob = new Blob([response], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
+      });
+  };
+
   // Data
   const columns = useMemo(
     () => [
@@ -196,9 +241,14 @@ const StockReport = () => {
           <Typography variant="h4" textAlign="center" mb="24px">
             <b>BÁO CÁO TỒN KHO</b>
           </Typography>
-          <Stack direction="row" sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Stack
+            direction="row"
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Tháng</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">
+                Tháng
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -217,7 +267,9 @@ const StockReport = () => {
               </Select>
             </FormControl>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Năm</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">
+                Năm
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -253,14 +305,28 @@ const StockReport = () => {
           <TableContainer columns={columns} rows={rows} />
         )}
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row-reverse",
-            marginTop: "24px",
-          }}
-        >
-          {!monthError && !yearError && month !== 0 && year !== 0 && new Date(year, month - 1) <= new Date() ? (
+        {!monthError &&
+        !yearError &&
+        month !== 0 &&
+        year !== 0 &&
+        new Date(year, month - 1) <= new Date() ? (
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              display: "flex",
+              justifyContent: "right",
+              marginTop: "24px",
+            }}
+          >
+            <ControlButton
+              varient="text"
+              height={40}
+              width={200}
+              onClick={downloadFile}
+            >
+              Tải xuống
+            </ControlButton>
             <ControlButton
               varient="standard"
               height={40}
@@ -269,10 +335,10 @@ const StockReport = () => {
             >
               Lưu báo cáo
             </ControlButton>
-          ) : (
-            <></>
-          )}
-        </Box>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Container>
     </Stack>
   );
