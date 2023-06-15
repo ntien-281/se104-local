@@ -59,7 +59,7 @@ const ServiceForm = ({ show }) => {
   
   useEffect(() => {
     fetchPara();
-  });
+  }, []);
   const handleUpdatePara = async () => {
     let res = await updateParameter(token, Number(paraValue));
     if (res) {
@@ -94,17 +94,17 @@ const ServiceForm = ({ show }) => {
         ServiceTypeId: item.id,
         incurred: item.incurred,
         quantity: item.quantity,
-        subtotal: item.subtotal,
+        subtotal: (item.incurred + item.price) * item.quantity,
         prePaid: item.prePaid,
-        remain: item.subtotal - item.prePaid,
+        remain: (item.incurred + item.price) * item.quantity - item.prePaid,
       }
     });
     reqBody = {
       customer: state.customerName,
       phone: state.customerPhone,
-      total: state.total,
+      total: modifiedCart.reduce((total, item) => total + item.subtotal, 0),
       paid: modifiedCart.reduce((totalPaid, item) => totalPaid + item.prePaid, 0),
-      remain: state.remain,
+      remain: modifiedCart.reduce((totalRemain, item) => totalRemain + item.remain, 0),
       cart: modifiedCart
     };
     console.log(reqBody);
@@ -215,7 +215,7 @@ const ServiceForm = ({ show }) => {
           <Typography
           sx={{
             fontSize: '1.6rem',
-          }}>Quy định trả trước lớn hơn: <span style={{color: 'red', fontSize: "1.8rem", fontWeight:600}}>{getPara}</span>%, thay đổi:</Typography>
+          }}>Quy định trả trước tối thiểu <span style={{color: 'red', fontSize: "1.8rem", fontWeight:600}}>{getPara}</span>%, thay đổi:</Typography>
           <TextField
             label=""
             placeholder="Nhập giá trị mới"
