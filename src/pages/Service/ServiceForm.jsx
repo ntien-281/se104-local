@@ -33,6 +33,7 @@ const ServiceForm = ({ show }) => {
   let productAmount = state.serviceCart.length;
 
   const token = useUserStore(state => state.token);
+  const username = useUserStore(state => state.username);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -241,6 +242,7 @@ const ServiceForm = ({ show }) => {
           <ControlButton
             color="success"
             onClick={handleUpdatePara}
+            disabled={username !== "admin"}
           >Cập nhật</ControlButton>
         </Box>
       </Grid>

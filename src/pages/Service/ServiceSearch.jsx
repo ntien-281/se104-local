@@ -17,6 +17,7 @@ const ServiceSearch = ({ show }) => {
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const username = useUserStore((state) => state.username);
 
   // getting service forms
   useEffect(() => {

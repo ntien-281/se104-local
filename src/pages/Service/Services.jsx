@@ -12,6 +12,7 @@ const Services = ({ show }) => {
   const [open, setOpen] = useState(false);
   const token = useUserStore((state) => state.token);
   const [refetch, setRefetch] = useState(false);
+  const username = useUserStore((state) => state.username);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -89,6 +90,7 @@ const Services = ({ show }) => {
             onClick={() => handleDetailButton(param.row.key)}
             color="secondary"
             variant="text"
+            disabled={username !== "admin"}
           >
             <b>Chỉnh sửa</b>
           </ControlButton>,
@@ -118,13 +120,16 @@ const Services = ({ show }) => {
       onChange={(e) => setSearchInput(e.target.value)}
       onClick={(e) => setSearchInput("")}
     >
-      
+      {username === "admin" ? (
+        <CreateServiceType
+          title="Tạo loại dịch vụ mới"
+          services={services}
+          setRefetch={setRefetch}
+        />
+      ) : (
+        <></>
+      )}
 
-      <CreateServiceType
-        title="Tạo loại dịch vụ mới"
-        services={services}
-        setRefetch={setRefetch}
-      />
       {services[rowID] ? (
         <ServiceTypeUpdateModal
           open={open}

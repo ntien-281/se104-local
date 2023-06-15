@@ -1,20 +1,19 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import AppHeader from '../../components/AppHeader';
-import { SearchContainer, TableContainer } from '../../components/Container';
-import SupplierUpdateModal from '../../components/Modal/SupplierUpdateModal';
-import { ControlButton } from '../../components/Controls';
-import { getAllSuppliers } from '../../api/supplier';
-import { useUserStore } from '../../../store';
-import CreateNewModal from '../../components/Modal/CreateNewModal';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from "react";
+import AppHeader from "../../components/AppHeader";
+import { SearchContainer, TableContainer } from "../../components/Container";
+import SupplierUpdateModal from "../../components/Modal/SupplierUpdateModal";
+import { ControlButton } from "../../components/Controls";
+import { getAllSuppliers } from "../../api/supplier";
+import { useUserStore } from "../../../store";
+import CreateNewModal from "../../components/Modal/CreateNewModal";
+import { useNavigate } from "react-router-dom";
 
 const Supplier = () => {
-
   const [searchInput, setSearchInput] = useState("");
-  const [rowID, setRowID] = useState(0)
-  const [open, setOpen] = useState(false)
-  const [suppliers, setSuppliers] = useState([])
-  const token = useUserStore(state => state.token)
+  const [rowID, setRowID] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
+  const token = useUserStore((state) => state.token);
   const [refetch, setRefetch] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -22,18 +21,19 @@ const Supplier = () => {
 
   const setUsername = useUserStore((state) => state.setUsername);
   const setToken = useUserStore((state) => state.setToken);
+  const username = useUserStore((state) => state.username);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const usernameStorage = sessionStorage.getItem('username');
-    const tokenStorage = sessionStorage.getItem('token');
+    const usernameStorage = sessionStorage.getItem("username");
+    const tokenStorage = sessionStorage.getItem("token");
     if (usernameStorage && tokenStorage) {
       setUsername(usernameStorage);
       setToken(tokenStorage);
-      navigate('/supplier');
+      navigate("/supplier");
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   }, []);
 
@@ -67,44 +67,59 @@ const Supplier = () => {
   const columns = useMemo(
     () => [
       {
-        field: 'no',
-        headerName: '#',
-        headerAlign: 'center',
-        align: 'center',
+        field: "no",
+        headerName: "#",
+        headerAlign: "center",
+        align: "center",
         width: 50,
         disableColumnMenu: true,
       },
-      { field: 'id', headerName: 'Mã nhà cung cấp', width: 100, disableColumnMenu: true },
-      { field: 'name', headerName: 'Tên nhà cung cấp', width: 200, disableColumnMenu: true },
       {
-        field: 'phone',
-        headerName: 'Số điện thoại',
-        headerAlign: 'center',
-        align: 'center',
+        field: "id",
+        headerName: "Mã nhà cung cấp",
+        width: 100,
+        disableColumnMenu: true,
+      },
+      {
+        field: "name",
+        headerName: "Tên nhà cung cấp",
         width: 200,
         disableColumnMenu: true,
       },
       {
-        field: 'address',
-        headerName: 'Địa chỉ',
-        headerAlign: 'center',
-        align: 'center',
+        field: "phone",
+        headerName: "Số điện thoại",
+        headerAlign: "center",
+        align: "center",
+        width: 200,
+        disableColumnMenu: true,
+      },
+      {
+        field: "address",
+        headerName: "Địa chỉ",
+        headerAlign: "center",
+        align: "center",
         width: 300,
         disableColumnMenu: true,
       },
       {
-        field: 'actions',
-        type: 'actions',
-        align: 'center',
+        field: "actions",
+        type: "actions",
+        align: "center",
         width: 100,
         getActions: (param) => [
-          <ControlButton onClick={() => handleDetailButton(param.row.key)} color="secondary" variant="text">
+          <ControlButton
+            onClick={() => handleDetailButton(param.row.key)}
+            color="secondary"
+            variant="text"
+            disabled={username !== "admin"}
+          >
             <b>Chỉnh sửa</b>
           </ControlButton>,
         ],
       },
     ],
-    [handleDetailButton, suppliers],
+    [handleDetailButton, suppliers]
   );
 
   const rows = useMemo(() => {
@@ -126,21 +141,44 @@ const Supplier = () => {
     <>
       <AppHeader>NHÀ CUNG CẤP</AppHeader>
       <SearchContainer
-      show={true}
-      title="Danh mục nhà cung cấp"
-      value={searchInput}
-      onChange={(e) => setSearchInput(e.target.value)}
-      onClick={(e) => setSearchInput("")}
-    >
-      <CreateNewModal
-          title="Thêm nhà cung cấp"
-          setRefetch={setRefetch}
-          suppliers={suppliers}
-        />
-      {suppliers[rowID] ? <SupplierUpdateModal open={open} onButtonClose={handleClose} title="Chi tiết nhà cung cấp" data={suppliers[rowID]} setRefetch={setRefetch} /> : <></>}
-      
-      {!isLoading && !error ? <TableContainer columns={columns} rows={rows} SearchInput={searchInput} /> : 'Loading...'}
-    </SearchContainer>
+        show={true}
+        title="Danh mục nhà cung cấp"
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        onClick={(e) => setSearchInput("")}
+      >
+        {username === "admin" ? (
+          <CreateNewModal
+            title="Thêm nhà cung cấp"
+            setRefetch={setRefetch}
+            suppliers={suppliers}
+          />
+        ) : (
+          <></>
+        )}
+
+        {suppliers[rowID] ? (
+          <SupplierUpdateModal
+            open={open}
+            onButtonClose={handleClose}
+            title="Chi tiết nhà cung cấp"
+            data={suppliers[rowID]}
+            setRefetch={setRefetch}
+          />
+        ) : (
+          <></>
+        )}
+
+        {!isLoading && !error ? (
+          <TableContainer
+            columns={columns}
+            rows={rows}
+            SearchInput={searchInput}
+          />
+        ) : (
+          "Loading..."
+        )}
+      </SearchContainer>
     </>
   );
 };

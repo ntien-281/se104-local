@@ -12,6 +12,7 @@ const ControlButton = ({
   startIcon,
   endIcon,
   children,
+  disabled
 }) => {
   return (
     <Button
@@ -22,6 +23,7 @@ const ControlButton = ({
       sx={{ width: { width }, height: { height }, margin: { margin }, fontSize: { fontSize } }}
       startIcon={startIcon}
       endIcon={endIcon}
+      disabled={disabled}
     >
       {children}
     </Button>

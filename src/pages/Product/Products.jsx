@@ -12,6 +12,7 @@ const Products = () => {
   const [rowID, setRowID] = useState(0);
   const token = useUserStore((state) => state.token);
   const [refetch, setRefetch] = useState(false);
+  const username = useUserStore((state) => state.username);
 
   // TODO: call api
 
@@ -107,6 +108,7 @@ const Products = () => {
             onClick={() => handleDetailButton(param.row.key)}
             color="secondary"
             variant="text"
+            disabled={(username != "admin")}
           >
             <b>Chỉnh sửa</b>
           </ControlButton>,
@@ -140,12 +142,13 @@ const Products = () => {
       onChange={(e) => setSearchInput(e.target.value)}
       onClick={(e) => setSearchInput("")}
     >
-      <CreateProductModal
+      {username === "admin" ? <CreateProductModal
         title="Tạo sản phẩm mới"
         products={products}
         setRefetch={setRefetch}
-      />
-      {products[rowID] ? (
+      /> : <></>}
+      
+      {products[rowID] && username === "admin" ? (
         <ProductUpdateModal
           open={open}
           onButtonClose={handleClose}

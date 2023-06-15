@@ -15,6 +15,7 @@ const ProductType = () => {
   const token = useUserStore(state => state.token)
   const [types, setTypes] = useState([])
   const [refetch, setRefetch] = useState(false);
+  const username = useUserStore(state => state.username);
 
 
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +86,8 @@ const ProductType = () => {
         align: 'center',
         width: 100,
         getActions: (param) => [
-          <ControlButton onClick={() => handleDetailButton(param.row.key)} color="secondary" variant="text">
+          <ControlButton onClick={() => handleDetailButton(param.row.key)} color="secondary" variant="text"
+          disabled={(username != "admin")}>
             <b>Chỉnh sửa</b>
           </ControlButton>,
         ],
@@ -118,7 +120,10 @@ const ProductType = () => {
       onClick={(e) => setSearchInput("")}
     >
 
-      <CreateProductTypeModal title="Tạo loại sản phẩm mới" producttypes={types} setRefetch={setRefetch} />
+      {(username === "admin") ? (
+        <CreateProductTypeModal title="Tạo loại sản phẩm mới" producttypes={types} setRefetch={setRefetch} />
+      ) : <></>}
+      
       {types[rowID] ? <ProductTypeUpdateModal open={open} onButtonClose={handleClose} title="Chi tiết loại sản phẩm" data={types[rowID]} setRefetch={setRefetch} /> : <></>}
       
       {!isLoading && !error ? <TableContainer columns={columns} rows={rows} SearchInput={searchInput} /> : 'Loading...'}
