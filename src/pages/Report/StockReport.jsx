@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Typography, Stack, TextField, Box } from "@mui/material";
+import { Typography, Stack, TextField, Box, InputLabel, MenuItem, FormControl, Select } from "@mui/material";
 import { Container, TableContainer } from "../../components/Container";
 import { useUserStore } from "../../../store";
 import { getAllProducts } from "../../api/product";
@@ -18,7 +18,6 @@ const StockReport = () => {
   const [yearError, setYearError] = useState(false);
   const username = useUserStore((state) => state.username);
 
-  // TODO: call api
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [products, setProducts] = useState([]);
@@ -197,48 +196,45 @@ const StockReport = () => {
           <Typography variant="h4" textAlign="center" mb="24px">
             <b>BÁO CÁO TỒN KHO</b>
           </Typography>
-          <Typography variant="h6" textAlign="center">
-            <TextField
-              value={month}
-              name={month}
-              onChange={handleChangeMonth}
-              error={monthError}
-              helperText={monthError ? "Kiểm tra lại" : ""}
-              inputProps={{
-                style: {
-                  fontSize: "1.8rem",
-                  height: 15,
-                  textAlign: "center",
-                },
-                type: "number",
-                step: 1,
-                min: 1,
-                max: 12,
-                inputMode: "numeric",
-                pattern: "[0-9]*",
-              }}
-            />
-            <TextField
-              value={year}
-              name={year}
-              onChange={handleChangeYear}
-              error={yearError}
-              helperText={yearError ? "Kiểm tra lại" : ""}
-              inputProps={{
-                style: {
-                  fontSize: "1.8rem",
-                  height: 15,
-                  textAlign: "center",
-                },
-                type: "number",
-                step: 1,
-                min: 2020,
-                max: 2023,
-                inputMode: "numeric",
-                pattern: "[0-9]*",
-              }}
-            />
-          </Typography>
+          <Stack direction="row" sx={{ display: 'flex', justifyContent: 'center' }}>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Tháng</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={month}
+                onChange={handleChangeMonth}
+                label="Tháng"
+              >
+                <MenuItem value="0">
+                  <em>Trống</em>
+                </MenuItem>
+                {Array.from({ length: 12 }, (_, index) => (
+                  <MenuItem key={index + 1} value={index + 1}>
+                    {index < 9 ? `0${index + 1}` : index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Năm</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={year}
+                onChange={handleChangeYear}
+                label="Năm"
+              >
+                <MenuItem value={0}>
+                  <em>Trống</em>
+                </MenuItem>
+                <MenuItem value={2020}>2020</MenuItem>
+                <MenuItem value={2021}>2021</MenuItem>
+                <MenuItem value={2022}>2022</MenuItem>
+                <MenuItem value={2023}>2023</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
         </Stack>
         {Number(month) <= 0 ||
         Number(month) > 12 ||
@@ -264,7 +260,7 @@ const StockReport = () => {
             marginTop: "24px",
           }}
         >
-          {!monthError && !yearError && month !== 0 && year !== 0 ? (
+          {!monthError && !yearError && month !== 0 && year !== 0 && new Date(year, month - 1) <= new Date() ? (
             <ControlButton
               varient="standard"
               height={40}

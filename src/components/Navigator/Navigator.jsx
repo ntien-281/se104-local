@@ -18,6 +18,9 @@ const Navigator = () => {
       <Box>
         <CssBaseline />
         <Drawer variant="permanent" anchor="left">
+          <Box width={drawerWidth} height="64px" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'end' }}>
+            <img width="220px" height="55px" src="src\assets\images\logo_jewelry_store.png" alt="Logo" />
+          </Box>
           <ToggleButtonGroup
             orientation="vertical"
             value={view}
