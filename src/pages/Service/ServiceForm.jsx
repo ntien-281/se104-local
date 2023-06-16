@@ -41,6 +41,7 @@ const ServiceForm = ({ show }) => {
   const [getPara, setGetPara] = useState(50);
   const [paraValue, setParaValue] = useState(50)
   const [paraError, setParaError] = useState(false)
+  const [triggerRerender, setTriggerRerender] = useState(false)
 
   const handleParaChange = (e) => {
     setParaValue(e.target.value);
@@ -72,6 +73,10 @@ const ServiceForm = ({ show }) => {
     fetchPara();
   }
 
+  // useEffect(() => {
+
+  // }, [triggerRerender])
+
   // Modal Button
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -95,7 +100,7 @@ const ServiceForm = ({ show }) => {
       return;
     }
     state.serviceCart.map((item, index) => {
-      if (item.prePaid < (item.subtotal * getPara / 100) || item.prePaid > item.subtotal) {
+      if (item.prePaid < ((item.price + item.incurred) * item.quantity * getPara / 100) || item.prePaid > item.subtotal) {
         alert(`Trả trước dịch vụ ${index + 1} tối thiểu ${getPara}%`);
         indexError = true;
       }
@@ -155,9 +160,11 @@ const ServiceForm = ({ show }) => {
       type: 'set_pre_paid_service',
       payload: {
         id,
-        value
+        value,
+        para: getPara
       }
-    })
+    });
+    setTriggerRerender(prev => !prev);
   }
   const setIncurredService = (id, value) => {
     

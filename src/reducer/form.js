@@ -254,9 +254,15 @@ const formReducer = (state, action) => {
       };
 
     case "set_pre_paid_service":
+      const para = action.payload.para;
       updatedCart = state.serviceCart.map((service, index) => {
         if (service.id === action.payload.id) {
           const incomingPrePaid = action.payload.value;
+          // if (incomingPrePaid < ((getServiceSubtotal(service) + service.prePaid) * para / 100) || incomingPrePaid > service.subtotal) {
+          //   return {
+          //     ...service
+          //   }
+          // }
           return { 
             ...service, 
             prePaid: incomingPrePaid,
