@@ -127,14 +127,13 @@ const StockReport = () => {
         countQuantity(sellFormData, product.id, Number(month), Number(year)) -
         countQuantity(buyFormData, product.id, Number(month), Number(year));
       return {
-        no: index + 1,
-        id: product.id,
-        name: product.name,
-        prevStock: prev_stock,
-        in: countQuantity(buyFormData, product.id, Number(month), Number(year)),
-        out: countQuantity(sellFormData, product.id, Number(month), Number(year)),
-        stock: product.stock,
-        unit: product.ProductType.unit,
+        "STT": index + 1,  
+        "Tên sản phẩm": product.name, 
+        "Tồn đầu": prev_stock, 
+        "Số lượng nhập": countQuantity(buyFormData, product.id, Number(month), Number(year)), 
+        "Số lượng xuất": countQuantity(sellFormData, product.id, Number(month), Number(year)), 
+        "Tồn cuối": product.stock,
+        "Đơn vị tính": product.ProductType.unit 
       };
     });
     const newBody = JSON.stringify(reqBody);

@@ -30,11 +30,12 @@ export const handleAddService = (dispatch, event, services, state) => {
   });
 }
 
-export const handleRemove = (dispatch, event, state) => {
+export const handleRemove = (dispatch, event, state, type) => {
   dispatch({
     type: "remove_product",
     payload: {
       index: event.target.value,
+      formType: type
     },
   });
 };
@@ -48,11 +49,12 @@ export const handleRemoveService = (dispatch, event, state) => {
   });
 };
 
-export const handleDecrease = (dispatch, event, state) => {
+export const handleDecrease = (dispatch, event, state, type) => {
   dispatch({
     type: "decrease",
     payload: {
       index: event.target.value,
+      formType: type
     },
   });
 };
@@ -66,11 +68,12 @@ export const handleDecreaseService = (dispatch, event, state) => {
   });
 };
 
-export const handleIncrease = (dispatch, event, state) => {
+export const handleIncrease = (dispatch, event, state,type) => {
   dispatch({
     type: "increase",
     payload: {
       index: event.target.value,
+      formType: type
     },
   });
 };

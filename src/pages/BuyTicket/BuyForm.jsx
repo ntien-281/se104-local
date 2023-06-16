@@ -170,9 +170,9 @@ const BuyForm = ({ show }) => {
           productAmount={productAmount}
           cart={state.cart}
           // Thay doi so luong, xoa san pham trong productCart
-          handleDecrease={(e) => handleDecrease(dispatch, e, state, "buy")}
-          handleIncrease={(e) => handleIncrease(dispatch, e, state, "buy")}
-          handleRemove={(e) => handleRemove(dispatch, e, state, "buy")}
+          handleDecrease={(e) => handleDecrease(dispatch, e, state, "buyform")}
+          handleIncrease={(e) => handleIncrease(dispatch, e, state, "buyform")}
+          handleRemove={(e) => handleRemove(dispatch, e, state, "buyform")}
           // Cho Modal Select
           open={open}
           AddItem={handleAdd}
