@@ -20,6 +20,7 @@ import { ControlButton } from "../../components/Controls";
 import { createReport } from "../../api/report";
 import axios from "axios";
 import api from "../../api/axios.config";
+import { gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 
 const StockReport = () => {
   const token = useUserStore((state) => state.token);
@@ -34,6 +35,7 @@ const StockReport = () => {
   const [products, setProducts] = useState([]);
   const [sellFormData, setSellFormData] = useState([]);
   const [buyFormData, setBuyFormData] = useState([]);
+  const [errorFlag, setErrorFlag] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,7 +60,29 @@ const StockReport = () => {
     fetchData();
   }, []);
 
+  const checkTime = () => {
+    const current = new Date();
+    const currMonth = current.getMonth() + 1;
+    const currYear = current.getFullYear();
+    if (year > currYear || (year === currYear && currMonth < month)) {
+      setErrorFlag(true);
+    }
+    else if (month <= 0 || year < 2020) {
+      setErrorFlag(true);
+    } else {
+      setErrorFlag(false);
+    }
+  };
+
+  useEffect(() => {
+    checkTime();
+  }, [month, year]);
+
   const handleSaveReport = async () => {
+    if (errorFlag) {
+      alert("Không có dữ liệu");
+      return;
+    }
     if (username !== "admin") {
       alert("Cần quyền admin để lập báo cáo");
       return;
@@ -121,47 +145,61 @@ const StockReport = () => {
   };
 
   const downloadFile = async () => {
+    if (errorFlag) {
+      alert("Không có dữ liệu");
+      return;
+    }
     const reqBody = products.map((product, index) => {
       const prev_stock =
         product.stock +
         countQuantity(sellFormData, product.id, Number(month), Number(year)) -
         countQuantity(buyFormData, product.id, Number(month), Number(year));
       return {
-        "STT": index + 1,  
-        "Tên sản phẩm": product.name, 
-        "Tồn đầu": prev_stock, 
-        "Số lượng nhập": countQuantity(buyFormData, product.id, Number(month), Number(year)), 
-        "Số lượng xuất": countQuantity(sellFormData, product.id, Number(month), Number(year)), 
+        STT: index + 1,
+        "Tên sản phẩm": product.name,
+        "Tồn đầu": prev_stock,
+        "Số lượng nhập": countQuantity(
+          buyFormData,
+          product.id,
+          Number(month),
+          Number(year)
+        ),
+        "Số lượng xuất": countQuantity(
+          sellFormData,
+          product.id,
+          Number(month),
+          Number(year)
+        ),
         "Tồn cuối": product.stock,
-        "Đơn vị tính": product.ProductType.unit 
+        "Đơn vị tính": product.ProductType.unit,
       };
     });
     const newBody = JSON.stringify(reqBody);
     await api
       .post(
-        '/download',
+        "/download",
         {
           newBody,
         },
         {
-          responseType: 'arraybuffer',
+          responseType: "arraybuffer",
           headers: {
-            Authorization: 'Bearer ' + token,
+            Authorization: "Bearer " + token,
           },
-        },
+        }
       )
       .then((response) => {
         console.log(response);
         const blob = new Blob([response.data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         });
-        const link = document.createElement('a');
-        link.setAttribute('download', 'SheetJSNode.xlsx');
+        const link = document.createElement("a");
+        link.setAttribute("download", "SheetJSNode.xlsx");
         link.href = window.URL.createObjectURL(blob);
         // link.download =
         link.click();
       });
-  }
+  };
 
   // Data
   const columns = useMemo(
@@ -235,15 +273,19 @@ const StockReport = () => {
         no: index + 1,
         id: product.id,
         name: product.name,
-        prevStock: prev_stock,
-        in: countQuantity(buyFormData, product.id, Number(month), Number(year)),
-        out: countQuantity(
-          sellFormData,
-          product.id,
-          Number(month),
-          Number(year)
-        ),
-        stock: product.stock,
+        prevStock: errorFlag ? "Chưa có dữ liệu" : prev_stock,
+        in: errorFlag
+          ? "Chưa có dữ liệu"
+          : countQuantity(buyFormData, product.id, Number(month), Number(year)),
+        out: errorFlag
+          ? "Chưa có dữ liệu"
+          : countQuantity(
+              sellFormData,
+              product.id,
+              Number(month),
+              Number(year)
+            ),
+        stock: errorFlag ? "Chưa có dữ liệu" : product.stock,
         unit: product.ProductType.unit,
       };
     });
@@ -303,10 +345,7 @@ const StockReport = () => {
             </FormControl>
           </Stack>
         </Stack>
-        {Number(month) <= 0 ||
-        Number(month) > 12 ||
-        Number(year) <= 2019 ||
-        Number(year) > 2023 ? (
+        {errorFlag ? (
           <Typography
             sx={{
               fontSize: "2.1rem",
@@ -314,17 +353,13 @@ const StockReport = () => {
               color: "green",
             }}
           >
-            Chọn tháng và năm
+            Chưa có dữ liệu
           </Typography>
         ) : (
           <TableContainer columns={columns} rows={rows} />
         )}
 
-        {!monthError &&
-        !yearError &&
-        month !== 0 &&
-        year !== 0 &&
-        new Date(year, month - 1) <= new Date() ? (
+        {!errorFlag ? (
           <Stack
             direction="row"
             spacing={1}
