@@ -18,7 +18,6 @@ import { countQuantity } from "../../utils/countQuantity";
 import { isNumberOnly } from "../../reducer/form";
 import { ControlButton } from "../../components/Controls";
 import { createReport } from "../../api/report";
-import { download } from "../../api/download";
 import axios from "axios";
 import api from "../../api/axios.config";
 
@@ -127,26 +126,43 @@ const StockReport = () => {
         product.stock +
         countQuantity(sellFormData, product.id, Number(month), Number(year)) -
         countQuantity(buyFormData, product.id, Number(month), Number(year));
-      return { no: index + 1, id: product.id, name: product.name, prevStock: prev_stock, in: countQuantity(buyFormData, product.id, Number(month), Number(year)), out: countQuantity(sellFormData, product.id, Number(month), Number(year)), stock: product.stock, unit: product.ProductType.unit };
+      return {
+        no: index + 1,
+        id: product.id,
+        name: product.name,
+        prevStock: prev_stock,
+        in: countQuantity(buyFormData, product.id, Number(month), Number(year)),
+        out: countQuantity(sellFormData, product.id, Number(month), Number(year)),
+        stock: product.stock,
+        unit: product.ProductType.unit,
+      };
     });
-    const newBody = (JSON.stringify(reqBody));
-    await api.post(`/download`, {
-        newBody
-      } ,{
-        responseType: "arraybuffer",
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
+    const newBody = JSON.stringify(reqBody);
+    await api
+      .post(
+        '/download',
+        {
+          newBody,
+        },
+        {
+          responseType: 'arraybuffer',
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      )
       .then((response) => {
-        const blob = new Blob([response], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        console.log(response);
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
-        const link = document.createElement("a");
+        const link = document.createElement('a');
+        link.setAttribute('download', 'SheetJSNode.xlsx');
         link.href = window.URL.createObjectURL(blob);
+        // link.download =
         link.click();
       });
-  };
+  }
 
   // Data
   const columns = useMemo(
@@ -327,14 +343,14 @@ const StockReport = () => {
             >
               Tải xuống
             </ControlButton>
-            <ControlButton
+            {/* <ControlButton
               varient="standard"
               height={40}
               width={200}
               onClick={handleSaveReport}
             >
               Lưu báo cáo
-            </ControlButton>
+            </ControlButton> */}
           </Stack>
         ) : (
           <></>

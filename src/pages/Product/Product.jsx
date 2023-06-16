@@ -5,6 +5,7 @@ import Products from './Products';
 import ProductType from './ProductType';
 import AppHeader from '../../components/AppHeader';
 import { useUserStore } from '../../../store';
+import Unit from './Unit';
 
 const Product = () => {
   const [value, setValue] = useState('products');
@@ -40,10 +41,11 @@ const Product = () => {
         <Tabs aria-label="basic tabs example" value={value} onChange={handleTabButton}>
           <Tab label="Sản phẩm" value={'products'}></Tab>
           <Tab label="Loại sản phẩm" value={'product-type'}></Tab>
+          <Tab label="Đơn vị tính" value={'unit'}></Tab>
         </Tabs>
       </Box>
       <main>
-          { value === "products" ? <Products />: <ProductType /> }
+          { value === "products" ? <Products />: (value === "unit" ? <Unit/> : <ProductType />) }
       </main>
     </>
   );

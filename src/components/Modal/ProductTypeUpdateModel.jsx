@@ -1,7 +1,11 @@
 import {
+  FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -13,13 +17,40 @@ import { ModalContainer } from "../Container";
 import { ControlButton } from "../Controls";
 import { updateProductType } from "../../api/producttype";
 import { useUserStore } from "../../../store";
+import { getAllUnits } from "../../api/unit";
 
 const ProductTypeUpdateModal = ({ open, onButtonClose, title, data, setRefetch }) => {
   const [newName, setNewName] = useState("");
   const [newUnit, setNewUnit] = useState("");
+  const [newUnitId, setNewUnitId] = useState("");
   const [newIntereset, setNewIntereset] = useState(data.interest);
   const token = useUserStore(state => state.token);
+  const [currentUnit, setCurrentUnit] = useState(0)
+  const [units, setUnits] = useState([])
   // const [priceDisplay, setPriceDisplay] = useState(newPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+
+  useEffect(() => {
+    const fetchUnit = async() => {
+      let res;
+      try {
+        res = await getAllUnits(token);
+        if (res) {
+          setUnits(res.data);
+        }
+      } catch (error) {
+        alert("Lỗi xảy ra khi lấy danh sách đơn vị")
+        return
+      }
+    }
+    fetchUnit()
+  }, [])
+
+  useEffect(() => {
+    if (units.length > 0) {
+      setNewUnitId(units[currentUnit].id);
+      setNewUnit(units[currentUnit].name);
+    }
+  }, [currentUnit])
 
   const modalTitle = (
     <div>
@@ -33,13 +64,17 @@ const ProductTypeUpdateModal = ({ open, onButtonClose, title, data, setRefetch }
     setNewIntereset(0);
   }, [open])
 
+  const handleChangeUnit = (e) => {
+    setCurrentUnit(e.target.value);
+  }
+
   const handleUpdateProduct = async () => {
-    if (!newName && !newUnit && !newIntereset) {
+    if (!newName && !newUnit && !newIntereset && !newUnitId) {
       alert("Chưa nhập thông tin gì.");
     }
     let res;
     try {
-      await updateProductType(token, { name: newName, unit: newUnit, interest: newIntereset }, data.id).then(result => res = result);
+      await updateProductType(token, { name: newName, unit: newUnit, interest: newIntereset, UnitId: newUnitId }, data.id).then(result => res = result);
       console.log(res);
       if (res.error) {
         alert("Chỉnh sửa không thành công", res?.error?.response?.data);
@@ -89,14 +124,24 @@ const ProductTypeUpdateModal = ({ open, onButtonClose, title, data, setRefetch }
             onChange={(e) => setNewName(e.target.value)}
             sx={{ mb: "28px" }}
           />
-          <TextField
-            variant="outlined"
-            id="id"
-            label="Đơn vị"
-            value={newUnit}
-            onChange={(e) => setNewUnit(e.target.value)}
-            sx={{ mb: "28px" }}
-          />
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">
+                Đơn vị
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={currentUnit}
+                onChange={handleChangeUnit}
+                label="Đơn vị"
+              >
+                {units.map((unit, index) => (
+                  <MenuItem key={unit.id} value={index}>
+                    {unit.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           <TextField
             variant="outlined"
             id="price"
@@ -111,6 +156,9 @@ const ProductTypeUpdateModal = ({ open, onButtonClose, title, data, setRefetch }
                   <IconButton color="secondary" sx={{marginLeft: "6px"}} onClick={handleIncrementPrice}><ArrowDropUpIcon fontSize="large" /></IconButton>
                   <IconButton color="secondary" sx={{marginLeft: "6px"}} onClick={handleDecrementPrice}><ArrowDropDownIcon fontSize="large" /></IconButton>
                 </>,
+            }}
+            sx={{
+              marginTop: '24px'
             }}
           />
         </Paper>

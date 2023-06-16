@@ -139,6 +139,8 @@ const SellSearch = () => {
     });
   }, [formData]);
 
+  console.log(formData);
+
   return (
     <SearchContainer
       show={true}

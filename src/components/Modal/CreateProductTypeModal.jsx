@@ -5,12 +5,17 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
 } from "@mui/material";
 import { React, useEffect, useState } from "react";
 import { useUserStore } from "../../../store";
 import Alert from "@mui/material/Alert";
 import { createProductType } from "../../api/producttype";
+import { getAllUnits } from "../../api/unit";
 
 // Use for adding supplier only since the api called is unique
 const CreateProductTypeModal = ({ title, producttypes, setRefetch }) => {
@@ -20,6 +25,7 @@ const CreateProductTypeModal = ({ title, producttypes, setRefetch }) => {
     name: "",
     unit: "",
     interest: 0,
+    UnitId: "",
   });
   const [open, setOpen] = useState(false);
   const [nameError, setNameError] = useState(false);
@@ -27,9 +33,38 @@ const CreateProductTypeModal = ({ title, producttypes, setRefetch }) => {
   const [unitError, setUnitError] = useState(false);
   const token = useUserStore((state) => state.token);
   const [errorMsg, setErrorMsg] = useState("");
+  const [units, setUnits] = useState([])
+  const [currentUnit, setCurrentUnit] = useState(0)
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const fetchUnit = async() => {
+      let res;
+      try {
+        res = await getAllUnits(token);
+        if (res) {
+          setUnits(res.data);
+        }
+      } catch (error) {
+        alert("Lỗi xảy ra khi lấy danh sách đơn vị")
+        return
+      }
+    }
+    fetchUnit()
+  }, [])
+
+  useEffect(() => {
+    if (units.length > 0) {
+      setSubmitObj({
+        ...submitObj,
+        unit: units[currentUnit].name,
+        UnitId: units[currentUnit].id,
+      })
+    }
+  }, [currentUnit])
+  
 
   useEffect(() => {
     const duplicate = producttypes.findIndex(
@@ -83,6 +118,9 @@ const CreateProductTypeModal = ({ title, producttypes, setRefetch }) => {
       [e.target.name]: e.target.value,
     });
   };
+  const handleChangeUnit = (e) => {
+    setCurrentUnit(e.target.value);
+  }
 
   console.log(submitObj);
   return (
@@ -116,27 +154,24 @@ const CreateProductTypeModal = ({ title, producttypes, setRefetch }) => {
               },
             }}
           />
-          <TextField
-            id="unit"
-            name="unit"
-            label="Đơn vị tính"
-            fullWidth
-            placeholder="Đơn vị tính"
-            sx={{ marginTop: 2 }}
-            value={submitObj.unit}
-            onChange={handleChange}
-            required
-            error={unitError}
-            helperText={unitError ? "Vui lòng nhập đơn vị" : ""}
-            inputProps={{
-              onBlur: () => {
-                if (!submitObj.unit.length) setUnitError(true);
-              },
-              onFocus: () => {
-                setUnitError(false);
-              },
-            }}
-          />
+          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">
+                Đơn vị
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={currentUnit}
+                onChange={handleChangeUnit}
+                label="Đơn vị"
+              >
+                {units.map((unit, index) => (
+                  <MenuItem key={unit.id} value={index}>
+                    {unit.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           <TextField
             id="interest"
             name="interest"
