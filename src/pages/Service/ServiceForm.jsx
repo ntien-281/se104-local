@@ -85,12 +85,22 @@ const ServiceForm = ({ show }) => {
   const handleSubmit = async () => {
     let reqBody;
     let res;
+    let indexError = 0;
     if (state.customerName === "" || state.customerPhone === "") {
       alert("Nhập thông tin khách hàng")
       return;
     }
     else if (state.serviceCart.length === 0) {
       alert("Chưa chọn dịch vụ nào");
+      return;
+    }
+    state.serviceCart.map((item, index) => {
+      if (item.prePaid < (item.subtotal * getPara / 100) || item.prePaid > item.subtotal) {
+        alert(`Trả trước dịch vụ ${index + 1} tối thiểu ${getPara}%`);
+        indexError = true;
+      }
+    });
+    if (indexError) {
       return;
     }
     let modifiedCart = state.serviceCart.map(item => {

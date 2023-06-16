@@ -144,6 +144,7 @@ const CartContainer = ({
         </Box>
       ),
       renderCart: (ServiceCart) => {
+        console.log(ServiceCart);
         return ServiceCart.map((service, index) => (
           <Grid key={index} item xs={12}>
             <Box
