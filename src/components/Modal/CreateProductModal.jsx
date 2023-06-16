@@ -137,7 +137,7 @@ const CreateProductModal = ({ title, products, setRefetch }) => {
           </DialogContentText>
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
-                Đơn vị
+                Loại sản phẩm
               </InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
