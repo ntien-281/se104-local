@@ -7,6 +7,7 @@ import { ControlButton } from "../../components/Controls";
 import { getAllServiceForms } from '../../api/service';
 import { useUserStore } from '../../../store';
 import ServiceFormDetailModal from '../../components/Modal/ServiceFormDetailModal';
+import axios from '../../api/axios.config'
 
 const initialSearchInput =''
 
@@ -63,7 +64,25 @@ const ServiceSearch = ({ show }) => {
   const deleteSearchInput = () => {
     setSearchInput(initialSearchInput);
   };
-
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./service-form/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      setIsLoading(prev => !prev);
+      alert("Xóa thành công");
+      setIsLoading(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
   const columns = useMemo(
     () => [
       {
@@ -149,7 +168,7 @@ const ServiceSearch = ({ show }) => {
         field: "actions",
         type: "actions",
         align: "center",
-        width: 100,
+        width: 200,
         getActions: (param) => [
           <ControlButton
             onClick={() => handleDetailButton(param.row.key)}
@@ -158,6 +177,14 @@ const ServiceSearch = ({ show }) => {
           >
             <b>Chi tiết</b>
           </ControlButton>,
+          <ControlButton
+          onClick={() => handleDelete(formData[param.row.key].id)}
+          color="error"
+          variant="text"
+          disabled={(username != "admin")}
+        >
+          <b>Xóa</b>
+        </ControlButton>,
         ],
       },
     ],

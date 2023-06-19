@@ -63,6 +63,10 @@ const ServiceForm = ({ show }) => {
     fetchPara();
   }, []);
   const handleUpdatePara = async () => {
+    if (paraValue <= 0 || paraValue >= 100) {
+      alert("Giá trị không hợp lệ");
+      return;
+    }
     let res = await updateParameter(token, Number(paraValue));
     if (!res.error) {
       alert("Cập nhật thành công");

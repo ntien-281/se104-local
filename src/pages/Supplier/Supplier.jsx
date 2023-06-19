@@ -7,6 +7,7 @@ import { getAllSuppliers } from "../../api/supplier";
 import { useUserStore } from "../../../store";
 import CreateNewModal from "../../components/Modal/CreateNewModal";
 import { useNavigate } from "react-router-dom";
+import axios from '../../api/axios.config'
 
 const Supplier = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -64,6 +65,24 @@ const Supplier = () => {
     handleOpen();
   };
 
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./supplier/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      alert("Xóa thành công");
+      setRefetch(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
   const columns = useMemo(
     () => [
       {
@@ -106,7 +125,7 @@ const Supplier = () => {
         field: "actions",
         type: "actions",
         align: "center",
-        width: 100,
+        width: 200,
         getActions: (param) => [
           <ControlButton
             onClick={() => handleDetailButton(param.row.key)}
@@ -116,6 +135,14 @@ const Supplier = () => {
           >
             <b>Chỉnh sửa</b>
           </ControlButton>,
+          <ControlButton
+          onClick={() => handleDelete(suppliers[param.row.key].id)}
+          color="error"
+          variant="text"
+          disabled={(username != "admin")}
+        >
+          <b>Xóa</b>
+        </ControlButton>,
         ],
       },
     ],

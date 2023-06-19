@@ -5,6 +5,7 @@ import ServiceTypeUpdateModal from "../../components/Modal/ServiceTypeUpdateModa
 import { useUserStore } from "../../../store";
 import { getAllServices } from "../../api/service";
 import CreateServiceType from "../../components/Modal/CreateServiceType";
+import axios from '../../api/axios.config'
 
 const Services = ({ show }) => {
   const [searchInput, setSearchInput] = useState("");
@@ -45,6 +46,25 @@ const Services = ({ show }) => {
     handleOpen();
   };
 
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./service/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      alert("Xóa thành công");
+      setRefetch(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -84,7 +104,7 @@ const Services = ({ show }) => {
         field: "actions",
         type: "actions",
         align: "center",
-        width: 100,
+        width: 200,
         getActions: (param) => [
           <ControlButton
             onClick={() => handleDetailButton(param.row.key)}
@@ -93,6 +113,14 @@ const Services = ({ show }) => {
             disabled={username !== "admin"}
           >
             <b>Chỉnh sửa</b>
+          </ControlButton>,
+          <ControlButton
+            onClick={() => handleDelete(services[param.row.key].id)}
+            color="error"
+            variant="text"
+            disabled={(username != "admin")}
+          >
+            <b>Xóa</b>
           </ControlButton>,
         ],
       },

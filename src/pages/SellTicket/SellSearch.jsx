@@ -8,6 +8,7 @@ import FormDetailModal from "../../components/Modal/FormDetailModal";
 import { getAllSellForms } from "../../api/sell";
 import { useUserStore } from "../../../store";
 import { getFormatDateString } from "../../utils/date";
+import axios from '../../api/axios.config'
 
 const initialSearchInput = "";
 
@@ -15,6 +16,7 @@ const SellSearch = () => {
   const [open, setOpen] = useState(false);
   const [rowID, setRowID] = useState(0);
   const token = useUserStore((state) => state.token);
+  const username = useUserStore((state) => state.username);
   const [formData, setFormData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -47,6 +49,25 @@ const SellSearch = () => {
     setOpen(true);
   };
 
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./sell/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      setIsLoading(prev => !prev);
+      alert("Xóa thành công");
+      setIsLoading(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
   const handleClose = (event, reason) => {
     if (reason !== "backdropClick") {
       setOpen(false);
@@ -83,7 +104,7 @@ const SellSearch = () => {
       {
         field: "customerName",
         headerName: "Khách hàng",
-        width: 350,
+        width: 200,
         disableColumnMenu: true,
       },
       {
@@ -111,7 +132,7 @@ const SellSearch = () => {
         field: "actions",
         type: "actions",
         align: "center",
-        width: 100,
+        width: 200,
         getActions: (param) => [
           <ControlButton
             onClick={() => handleDetailButton(param.row.key)}
@@ -120,6 +141,14 @@ const SellSearch = () => {
           >
             <b>Chi tiết</b>
           </ControlButton>,
+          <ControlButton
+          onClick={() => handleDelete(formData[param.row.key].id)}
+          color="error"
+          variant="text"
+          disabled={(username != "admin")}
+        >
+          <b>Xóa</b>
+        </ControlButton>,
         ],
       },
     ],
@@ -127,19 +156,21 @@ const SellSearch = () => {
   );
 
   const rows = useMemo(() => {
-    return formData.map((form, index) => {
-      return {
-        key: index,
-        no: index + 1,
-        id: form.id,
-        customerName: form.customer,
-        totalPaid: `₫${form.total.toLocaleString()}`,
-        date: getFormatDateString(form.date),
-      };
-    });
+    if (formData.length > 0) {
+      return formData.map((form, index) => {
+        return {
+          key: index,
+          no: index + 1,
+          id: form.id,
+          customerName: form.customer,
+          totalPaid: `₫${form.total.toLocaleString()}`,
+          date: getFormatDateString(form.date),
+        };
+      });
+    }
   }, [formData]);
 
-  console.log(formData);
+  console.log(formData.length);
 
   return (
     <SearchContainer

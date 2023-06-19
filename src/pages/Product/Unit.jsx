@@ -7,6 +7,7 @@ import { getAllUnits } from "../../api/unit";
 import CreateProductModal from "../../components/Modal/CreateProductModal";
 import CreateUnitModal from "../../components/Modal/CreateUnitModal";
 import UnitUpdateModal from "../../components/Modal/UnitUpdateModal";
+import axios from '../../api/axios.config'
 
 const Unit = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -49,6 +50,24 @@ const Unit = () => {
     handleOpen();
   };
 
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./unit/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      alert("Xóa thành công");
+      setRefetch(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
   const columns = useMemo(
     () => [
       {
@@ -75,7 +94,7 @@ const Unit = () => {
         field: "actions",
         type: "actions",
         align: "center",
-        width: 100,
+        width: 200,
         getActions: (param) => [
           <ControlButton
             onClick={() => handleDetailButton(param.row.key)}
@@ -84,6 +103,14 @@ const Unit = () => {
             disabled={(username != "admin")}
           >
             <b>Chỉnh sửa</b>
+          </ControlButton>,
+          <ControlButton
+            onClick={() => handleDelete(products[param.row.key].id)}
+            color="error"
+            variant="text"
+            disabled={(username != "admin")}
+          >
+            <b>Xóa</b>
           </ControlButton>,
         ],
       },

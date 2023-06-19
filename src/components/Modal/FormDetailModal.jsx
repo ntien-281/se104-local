@@ -60,9 +60,9 @@ const Table = ({ cart }) => {
         <ProductItem
           key={index}
           index={index}
-          productName={item.Product.name}
-          productType={item.ProductType.name}
-          price={item.Product.price}
+          productName={item.Product?.name}
+          productType={item.ProductType?.name}
+          price={item.Product?.price}
           quantity={item.quantity}
           subtotal={item.subtotal}
         />
@@ -96,9 +96,9 @@ const FormDetailModal = ({ onButtonClose, open, title, formData, type }) => {
               <b>Thông tin nhà cung cấp</b>
             </Typography>
             <Stack direction="row" spacing={1}>
-              <TextField disabled label="Nhà cung cấp" value={formData.Supplier.name} sx={{ width: '250px' }} />
-              <TextField disabled label="Địa chỉ" value={formData.Supplier.address} sx={{ width: '250px' }} />
-              <TextField disabled label="Số điện thoại" value={formData.Supplier.phone} sx={{ width: '250px' }} />
+              <TextField disabled label="Nhà cung cấp" value={formData.Supplier?.name} sx={{ width: '250px' }} />
+              <TextField disabled label="Địa chỉ" value={formData.Supplier?.address} sx={{ width: '250px' }} />
+              <TextField disabled label="Số điện thoại" value={formData.Supplier?.phone} sx={{ width: '250px' }} />
             </Stack>
           </>
         )}
@@ -119,7 +119,7 @@ const FormDetailModal = ({ onButtonClose, open, title, formData, type }) => {
           }}
         >
           <Typography variant="h5">
-            Tổng thanh toán ({type === 'SellForm' ? formData.SellFormDetails.length : formData.BuyFormDetails.length}{' '}
+            Tổng thanh toán ({type === 'SellForm' ? formData?.SellFormDetails.length : formData?.BuyFormDetails.length}{' '}
             sản phẩm):
           </Typography>
           <Typography variant="h5" color="red" ml="4px">

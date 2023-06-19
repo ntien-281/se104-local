@@ -5,6 +5,7 @@ import ProductTypeUpdateModal from '../../components/Modal/ProductTypeUpdateMode
 import { getAllTypes } from '../../api/producttype'
 import { useUserStore } from '../../../store'
 import CreateProductTypeModal from '../../components/Modal/CreateProductTypeModal'
+import axios from '../../api/axios.config'
 
 
 const ProductType = () => {
@@ -35,6 +36,25 @@ const ProductType = () => {
     };
     fetchData();
   }, [refetch]);
+
+  const handleDelete = async (id) => {
+    let result;
+    console.log(id);
+    try {
+      await axios.delete(`./product-type/delete/${id}`, {
+        headers: {
+          Authorization: 'Bearer ' + token
+        }
+      });
+      alert("Xóa thành công");
+      setRefetch(prev => !prev);
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Xóa không thành công");
+      return;
+    }
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -84,12 +104,16 @@ const ProductType = () => {
         field: 'actions',
         type: 'actions',
         align: 'center',
-        width: 100,
+        width: 300,
         getActions: (param) => [
           <ControlButton onClick={() => handleDetailButton(param.row.key)} color="secondary" variant="text"
           disabled={(username != "admin")}>
             <b>Chỉnh sửa</b>
           </ControlButton>,
+          <ControlButton onClick={() => handleDelete(types[param.row.key].id)} color="error" variant="text"
+          disabled={(username != "admin")}>
+            <b>Xóa</b>
+          </ControlButton>
         ],
       },
     ],
@@ -104,7 +128,7 @@ const ProductType = () => {
         id: type.id,
         name: type.name,
         interest: `${type.interest} %`,
-        unit: type.unit
+        unit: type?.unit
       };
     });
   }, [types]);

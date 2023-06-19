@@ -38,6 +38,7 @@ const SupplierUpdateModal = ({ open, onButtonClose, title, data, setRefetch }) =
   const handleUpdateSupplier = async () => {
     if (!newName && !newPhone && !newAddress) {
       alert("Chưa nhập thông tin gì.");
+      return;
     }
     let res;
     try {
@@ -45,7 +46,6 @@ const SupplierUpdateModal = ({ open, onButtonClose, title, data, setRefetch }) =
       console.log(res);
       if (res.error) {
         alert("Chỉnh sửa không thành công", res?.error?.response?.data);
-        
       } else {
         setRefetch(prev => !prev);
         alert("Chỉnh sửa thành công");
@@ -53,6 +53,7 @@ const SupplierUpdateModal = ({ open, onButtonClose, title, data, setRefetch }) =
       onButtonClose();
     } catch (error) {
       alert(error);
+      return;
     }
   };
 

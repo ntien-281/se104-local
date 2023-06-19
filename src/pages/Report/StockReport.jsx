@@ -78,6 +78,7 @@ const StockReport = () => {
     checkTime();
   }, [month, year]);
 
+  // TODO: fix: Cập nhật báo cáo của tháng, khiếm khuyết dữ liệu có thể khiến chức năng hoạt động k tốt
   const handleSaveReport = async () => {
     if (errorFlag) {
       alert("Không có dữ liệu");
@@ -89,26 +90,26 @@ const StockReport = () => {
     }
     const cart = products.map((product) => {
       const prev_stock =
-        product.stock +
-        countQuantity(sellFormData, product.id, Number(month), Number(year)) -
-        countQuantity(buyFormData, product.id, Number(month), Number(year));
+        product?.stock +
+        countQuantity(sellFormData, product?.id, Number(month), Number(year)) -
+        countQuantity(buyFormData, product?.id, Number(month), Number(year));
       return {
         totalImport: countQuantity(
           buyFormData,
-          product.id,
+          product?.id,
           Number(month),
           Number(year)
         ),
         totalExport: countQuantity(
           sellFormData,
-          product.id,
+          product?.id,
           Number(month),
           Number(year)
         ),
         beginStock: prev_stock,
-        endStock: product.stock,
-        ProductId: product.id,
-        ProductTypeId: product.ProductType.id,
+        endStock: product?.stock,
+        ProductId: product?.id,
+        ProductTypeId: product.ProductType?.id,
       };
     });
     // console.log(cart);
@@ -152,26 +153,26 @@ const StockReport = () => {
     const reqBody = products.map((product, index) => {
       const prev_stock =
         product.stock +
-        countQuantity(sellFormData, product.id, Number(month), Number(year)) -
-        countQuantity(buyFormData, product.id, Number(month), Number(year));
+        countQuantity(sellFormData, product?.id, Number(month), Number(year)) -
+        countQuantity(buyFormData, product?.id, Number(month), Number(year));
       return {
         STT: index + 1,
-        "Tên sản phẩm": product.name,
+        "Tên sản phẩm": product?.name,
         "Tồn đầu": prev_stock,
         "Số lượng nhập": countQuantity(
           buyFormData,
-          product.id,
+          product?.id,
           Number(month),
           Number(year)
         ),
         "Số lượng xuất": countQuantity(
           sellFormData,
-          product.id,
+          product?.id,
           Number(month),
           Number(year)
         ),
-        "Tồn cuối": product.stock,
-        "Đơn vị tính": product.ProductType.unit,
+        "Tồn cuối": product?.stock,
+        "Đơn vị tính": product.ProductType?.unit,
       };
     });
     const newBody = JSON.stringify(reqBody);
@@ -265,28 +266,28 @@ const StockReport = () => {
   const rows = useMemo(() => {
     return products.map((product, index) => {
       const prev_stock =
-        product.stock +
-        countQuantity(sellFormData, product.id, Number(month), Number(year)) -
-        countQuantity(buyFormData, product.id, Number(month), Number(year));
+        product?.stock +
+        countQuantity(sellFormData, product?.id, Number(month), Number(year)) -
+        countQuantity(buyFormData, product?.id, Number(month), Number(year));
       return {
         key: index,
         no: index + 1,
-        id: product.id,
-        name: product.name,
+        id: product?.id,
+        name: product?.name,
         prevStock: errorFlag ? "Chưa có dữ liệu" : prev_stock,
         in: errorFlag
           ? "Chưa có dữ liệu"
-          : countQuantity(buyFormData, product.id, Number(month), Number(year)),
+          : countQuantity(buyFormData, product?.id, Number(month), Number(year)),
         out: errorFlag
           ? "Chưa có dữ liệu"
           : countQuantity(
               sellFormData,
-              product.id,
+              product?.id,
               Number(month),
               Number(year)
             ),
-        stock: errorFlag ? "Chưa có dữ liệu" : product.stock,
-        unit: product.ProductType.unit,
+        stock: errorFlag ? "Chưa có dữ liệu" : product?.stock,
+        unit: product.ProductType?.unit,
       };
     });
   }, [sellFormData, buyFormData, month, year]);
@@ -372,19 +373,19 @@ const StockReport = () => {
             <ControlButton
               varient="text"
               height={40}
-              width={200}
+              width={150}
               onClick={downloadFile}
             >
               Tải xuống
             </ControlButton>
-            {/* <ControlButton
+            <ControlButton
               varient="standard"
               height={40}
               width={200}
               onClick={handleSaveReport}
             >
-              Lưu báo cáo
-            </ControlButton> */}
+              Cập nhật báo cáo
+            </ControlButton>
           </Stack>
         ) : (
           <></>

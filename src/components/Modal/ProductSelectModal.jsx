@@ -149,26 +149,28 @@ export default function ProductSelectModal({
   );
 
   const tableBody = useMemo(() => {
-    return varient === "ticket"
-      ? products.map((row, index) => {
-          return {
-            key: index,
-            no: index + 1,
-            id: row.id,
-            name: row.name,
-            type: row.ProductType.name,
-            price: `₫${row.price.toLocaleString()}`,
-          };
-        })
-      : services.map((row, index) => {
-          return {
-            key: index,
-            no: index + 1,
-            id: row.id,
-            name: row.name,
-            price: `₫${row.price.toLocaleString()}`,
-          };
-        });
+    if (products.length || services.length) {
+      return varient === "ticket"
+        ? products.map((row, index) => {
+            return {
+              key: index,
+              no: index + 1,
+              id: row.id,
+              name: row?.name,
+              type: row.ProductType?.name,
+              price: `₫${row.price.toLocaleString()}`,
+            };
+          })
+        : services.map((row, index) => {
+            return {
+              key: index,
+              no: index + 1,
+              id: row.id,
+              name: row?.name,
+              price: `₫${row.price.toLocaleString()}`,
+            };
+          });
+    }
   }, [products, services]);
 
   // console.log(products)

@@ -12,7 +12,7 @@ const TableContainer = ({ columns, rows, SearchInput = '' }) => {
         },
       }}
     >
-      <DataGrid
+      { rows ? <DataGrid
         columns={columns}
         rows={rows.filter((row) => {
           return Object.keys(row).some((key) => {
@@ -23,7 +23,7 @@ const TableContainer = ({ columns, rows, SearchInput = '' }) => {
             return false;
           });
         })}
-      />
+      /> : <></>}
     </Box>
   );
 };
