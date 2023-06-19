@@ -93,7 +93,9 @@ const ProductTypeUpdateModal = ({ open, onButtonClose, title, data, setRefetch }
     // setPriceDisplay(newIntereset.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
   }
   const handleDecrementPrice = () => {
-    setNewIntereset(newIntereset - 1)
+    if (newIntereset > 1) {
+      setNewIntereset(newIntereset - 1)
+    }
     // setPriceDisplay(newIntereset.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
   }
   const handleChangeInterest = (e) => {

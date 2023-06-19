@@ -250,6 +250,7 @@ const ServiceForm = ({ show }) => {
             helperText={paraError ? "Không hợp lệ" : ""}
             onChange={handleParaChange}
             sx={{ width: '100px', marginTop: '12px', marginBottom: '12px' }}
+            disabled={username !== "admin"}
             inputProps={{
               style: {
                 fontSize: "1.5rem",

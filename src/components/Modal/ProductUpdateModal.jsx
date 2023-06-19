@@ -58,7 +58,9 @@ const ProductUpdateModal = ({ open, onButtonClose, title, data, setRefetch }) =>
     // setPriceDisplay(newPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
   }
   const handleDecrementPrice = () => {
-    setNewPrice(newPrice - 50000)
+    if (newPrice > 50000) {
+      setNewPrice(newPrice - 50000)
+    }
     // setPriceDisplay(newPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
   }
   const handleChangePrice = (e) => {
