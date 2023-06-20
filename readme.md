@@ -17,3 +17,16 @@ Danh sách thành viên:
 - Chạy app bằng lệnh `npm run dev`.
 - Copy đường dẫn của vite vào biến `FE_ORIGIN` trong file `.env` ở server.
 - Truy cập vào đường dẫn của vite.
+
+### ❗Tài khoản đăng nhập:
+- Admin:
+```
+Tài khoản: admin
+Mật khẩu: abc123
+```
+
+- Nhân viên:
+```
+Tài khoản: normal
+Mật khẩu: abc123
+```
