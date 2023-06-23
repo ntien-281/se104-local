@@ -7,7 +7,6 @@ import { getAllProducts } from "../../api/product";
 import { useUserStore } from "../../../store";
 import { getAllServices } from "../../api/service";
 
-
 export default function ProductSelectModal({
   AddItem,
   onButtonClick,
@@ -31,8 +30,7 @@ export default function ProductSelectModal({
         if (varient === "ticket") {
           const res = await getAllProducts(token);
           setProducts(res.data);
-        }
-        else if (varient === "service") {
+        } else if (varient === "service") {
           const res = await getAllServices(token);
           setServices(res.result.data);
         }
@@ -147,6 +145,7 @@ export default function ProductSelectModal({
     ],
     [products, services]
   );
+  console.log(products.length);
 
   const tableBody = useMemo(() => {
     if (products.length || services.length) {
@@ -187,12 +186,14 @@ export default function ProductSelectModal({
         <Skeleton variant="rectangular" height={300} width={600} />
       ) : error ? (
         <Alert severity="error">{errMsg ? errMsg : "Có lỗi xảy ra"}</Alert>
-      ) : (
+      ) : products.length || services.length ? (
         <TableContainer
           columns={tableHeading}
           rows={tableBody}
           SearchInput={SearchInput}
         />
+      ) : (
+        <Typography>Không có dữ liệu</Typography>
       )}
     </ModalButton>
   );
